@@ -1,0 +1,50 @@
+package argonet.board.service;
+
+import argonet.board.dto.MemberRequest;
+import argonet.board.entity.Member;
+import argonet.board.repository.MemberRepository;
+import lombok.RequiredArgsConstructor;
+import org.hibernate.DuplicateMappingException;
+import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.stereotype.Service;
+
+import javax.persistence.NoResultException;
+import javax.transaction.Transactional;
+import java.util.List;
+
+@Service
+@RequiredArgsConstructor
+@Transactional
+public class MemberService {
+
+    private final MemberRepository memberRepository;
+
+    private final JWTService jwtService;
+
+    // TODO: Add Duplicate Exception
+    public void join(MemberRequest request) throws Exception {
+        Member member = new Member(request);
+        memberRepository.save(member);
+    }
+
+    public String login(Member member) throws Exception{
+        try {
+            Member find = memberRepository.findByAccount(member.getAccount());
+            if(find == null) {
+                throw new Exception("존재하지 않는 회원입니다.");
+            } else if(!find.matchPassword(member.getPassword())) {
+                throw new Exception("알맞지 않은 비밀번호입니다.");
+            } else {
+                return jwtService.createJwt(find);
+            }
+        } catch (EmptyResultDataAccessException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    public List<Member> findAll() {
+        return memberRepository.findAll();
+    }
+
+}
