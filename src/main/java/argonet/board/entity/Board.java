@@ -1,12 +1,14 @@
 package argonet.board.entity;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
 
 @Entity
 @Getter
+@NoArgsConstructor
 public class Board {
 
     @Id
@@ -26,4 +28,14 @@ public class Board {
     private LocalDateTime deletedAt;
     private LocalDateTime isDeleted;
 
+    public Board(Member member, String title, String description) {
+        this.member = member;
+        this.title = title;
+        this.description = description;
+    }
+
+    public void modify(String title, String description) {
+        this.title = title;
+        this.description = description;
+    }
 }

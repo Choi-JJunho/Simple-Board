@@ -26,4 +26,6 @@ public class MemberController {
         memberService.join(member);
     }
 
+    // TODO : add Modify Member
+
 }

@@ -4,12 +4,10 @@ import argonet.board.dto.MemberRequest;
 import argonet.board.entity.Member;
 import argonet.board.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.DuplicateMappingException;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import javax.persistence.NoResultException;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Service
@@ -22,6 +20,7 @@ public class MemberService {
     private final JWTService jwtService;
 
     // TODO: Add Duplicate Exception
+    // TODO: Add Valid Token
     public void join(MemberRequest request) throws Exception {
         Member member = new Member(request);
         memberRepository.save(member);
