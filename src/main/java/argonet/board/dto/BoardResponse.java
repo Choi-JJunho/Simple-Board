@@ -1,7 +1,6 @@
 package argonet.board.dto;
 
 import argonet.board.entity.Board;
-import argonet.board.entity.Comment;
 import lombok.Data;
 
 import java.util.List;
@@ -15,13 +14,13 @@ public class BoardResponse {
     private String description;
     private List<CommentResponse> comments;
 
-    public BoardResponse(Board o) {
-        this.id = o.getId();
-        this.memberId = o.getMember().getId();
-        this.title = o.getTitle();
-        this.description = o.getDescription();
-        this.comments = o.getComments().stream()
-                .map(a -> new CommentResponse(a))
+    public BoardResponse(Board board) {
+        this.id = board.getId();
+        this.memberId = board.getMember().getId();
+        this.title = board.getTitle();
+        this.description = board.getDescription();
+        this.comments = board.getComments().stream()
+                .map(o -> new CommentResponse(o))
                 .collect(Collectors.toList());
     }
 }

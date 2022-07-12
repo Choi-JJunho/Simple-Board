@@ -12,7 +12,6 @@ import java.util.List;
 @Entity
 @Getter
 @NoArgsConstructor
-@ToString
 public class Board {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)

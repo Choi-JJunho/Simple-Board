@@ -5,7 +5,7 @@ create table if not exists member
     created_at timestamp default CURRENT_TIMESTAMP not null,
     deleted_at timestamp,
     email      varchar(255),
-    is_deleted boolean,
+    is_deleted boolean default false,
     name       varchar(255),
     password   varchar(255)
     );
@@ -16,7 +16,7 @@ create table if not exists board
     created_at  timestamp default CURRENT_TIMESTAMP not null,
     deleted_at  timestamp,
     description text,
-    is_deleted  boolean,
+    is_deleted  boolean default false,
     title       varchar(255),
     updated_at  timestamp,
     member_id   bigint references member (member_id)
@@ -29,7 +29,7 @@ create table if not exists comment
     deleted_at  timestamp,
     updated_at  timestamp,
     description text,
-    is_deleted  boolean,
+    is_deleted  boolean default false,
     board_id    bigint references board (board_id),
     member_id   bigint references member (member_id)
     );
