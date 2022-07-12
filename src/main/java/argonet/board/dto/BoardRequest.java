@@ -1,10 +1,11 @@
 package argonet.board.dto;
 
-import argonet.board.entity.Member;
 import lombok.Data;
+import org.springframework.lang.Nullable;
 
 @Data
 public class BoardRequest {
+
     private Long id;
     private Long memberId;
     private String title;

@@ -2,10 +2,8 @@ package argonet.board.controller;
 
 import argonet.board.dto.MemberRequest;
 import argonet.board.entity.Member;
-import argonet.board.repository.MemberRepository;
 import argonet.board.service.MemberService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;

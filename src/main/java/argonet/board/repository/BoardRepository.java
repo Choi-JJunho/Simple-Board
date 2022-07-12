@@ -22,11 +22,20 @@ public class BoardRepository {
     }
 
     public List<Board> findAll() {
-        return em.createQuery("select b from Board b", Board.class)
+        return em.createQuery("select b from Board b " +
+                        "join fetch b.member " +
+                        "join fetch b.comments", Board.class)
                 .getResultList();
     }
 
     public void remove(Board board) {
         em.remove(board);
+    }
+
+    public List<Board> findByMember(Long id) {
+        return em.createQuery("select b from Board b" +
+                " where b.member = :id", Board.class)
+                .setParameter("id", id)
+                .getResultList();
     }
 }
