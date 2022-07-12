@@ -30,6 +30,8 @@ public class Member {
     @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
     private LocalDateTime deletedAt;
+
+    @Column(nullable = false, insertable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isDeleted;
 
     public Boolean matchPassword(String password) {

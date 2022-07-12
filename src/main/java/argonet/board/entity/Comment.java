@@ -32,6 +32,7 @@ public class Comment {
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private LocalDateTime deletedAt;
+    @Column(nullable = false, insertable = false, columnDefinition = "BOOLEAN DEFAULT FALSE")
     private Boolean isDeleted;
 
     public Comment(String description, Member member, Board board) {
