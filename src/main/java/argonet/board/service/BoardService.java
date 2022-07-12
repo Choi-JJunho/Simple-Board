@@ -1,5 +1,6 @@
 package argonet.board.service;
 
+import argonet.board.config.Login;
 import argonet.board.dto.BoardRequest;
 import argonet.board.dto.BoardResponse;
 import argonet.board.entity.Board;
@@ -32,6 +33,7 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
+    @Login
     @Transactional
     public void saveBoard(BoardRequest request) throws Exception {
         Board board = new Board(memberRepository.findById(request.getMemberId()), request.getTitle(), request.getDescription());
@@ -42,6 +44,7 @@ public class BoardService {
     }
 
     // soft delete
+    @Login
     @Transactional
     public void remove(Long id) {
         Board board = boardRepository.findById(id);
@@ -49,11 +52,13 @@ public class BoardService {
         boardRepository.save(board);
     }
 
+    @Login
     @Transactional
-    public void update(BoardRequest request) {
+    public BoardResponse update(BoardRequest request) {
         Board board = boardRepository.findById(request.getId());
         board.modify(request.getTitle(), request.getDescription());
         boardRepository.save(board);
+        return new BoardResponse(board);
     }
 
     public List<BoardResponse> findByMemberId(Long id) {

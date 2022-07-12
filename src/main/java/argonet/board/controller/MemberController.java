@@ -20,8 +20,8 @@ public class MemberController {
     }
 
     @PostMapping("/join")
-    public void join(@RequestBody MemberRequest member) throws Exception {
-        memberService.join(member);
+    public Long join(@RequestBody MemberRequest member) throws Exception {
+        return memberService.join(member);
     }
 
     // TODO : add Modify Member

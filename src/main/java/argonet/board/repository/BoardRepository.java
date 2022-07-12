@@ -24,7 +24,7 @@ public class BoardRepository {
     public List<Board> findAll() {
         return em.createQuery("select distinct b from Board b " +
                         "join fetch b.member " +
-                        "join fetch b.comments", Board.class)
+                        "left outer join fetch b.comments", Board.class)
                 .getResultList();
     }
 
@@ -35,7 +35,7 @@ public class BoardRepository {
     public List<Board> findByMember(Long id) {
         return em.createQuery("select distinct b from Board b" +
                         " join fetch b.member " +
-                        " join fetch b.comments" +
+                        " left outer join fetch b.comments" +
                         " where b.member.id = :id", Board.class)
                 .setParameter("id", id)
                 .getResultList();

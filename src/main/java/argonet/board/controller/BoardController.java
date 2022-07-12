@@ -36,13 +36,14 @@ public class BoardController {
     }
 
     @DeleteMapping("/board")
-    public void deleteBoard(@RequestBody BoardRequest request) {
+    public String deleteBoard(@RequestBody BoardRequest request) {
         boardService.remove(request.getId());
+        return "Board Deleted";
     }
 
     @PatchMapping("/board/modify")
-    public void modifyBoard(@RequestBody BoardRequest request) {
-        boardService.update(request);
+    public BoardResponse modifyBoard(@RequestBody BoardRequest request) {
+        return boardService.update(request);
     }
 
 }

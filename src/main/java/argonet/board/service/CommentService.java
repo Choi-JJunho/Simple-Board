@@ -1,6 +1,7 @@
 package argonet.board.service;
 
 
+import argonet.board.config.Login;
 import argonet.board.dto.CommentRequest;
 import argonet.board.entity.Board;
 import argonet.board.entity.Comment;
@@ -21,6 +22,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
+    @Login
     public void save(CommentRequest request) throws Exception{
         Member member = memberRepository.findById(request.getMemberId());
         Board board = boardRepository.findById(request.getBoardId());
@@ -31,13 +33,14 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    // TODO : Valid member
+    @Login
     public void update(CommentRequest request) {
         Comment comment = commentRepository.findById(request.getId());
         comment.update(request.getDescription());
         commentRepository.save(comment);
     }
 
+    @Login
     public void remove(Long id) {
         Comment comment = commentRepository.findById(id);
         comment.delete();

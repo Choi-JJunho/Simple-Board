@@ -1,5 +1,6 @@
 package argonet.board.service;
 
+import argonet.board.config.JwtGenerator;
 import argonet.board.dto.MemberRequest;
 import argonet.board.entity.Member;
 import argonet.board.repository.MemberRepository;
@@ -17,13 +18,14 @@ public class MemberService {
 
     private final MemberRepository memberRepository;
 
-    private final JWTService jwtService;
+    private final JwtGenerator jwtGenerator;
 
     // TODO: Add Duplicate Exception
     // TODO: Add Valid Token
-    public void join(MemberRequest request) throws Exception {
+    public Long join(MemberRequest request) throws Exception {
         Member member = new Member(request);
         memberRepository.save(member);
+        return member.getId();
     }
 
     public String login(MemberRequest member) throws Exception{
@@ -34,7 +36,7 @@ public class MemberService {
             } else if(!find.matchPassword(member.getPassword())) {
                 throw new Exception("알맞지 않은 비밀번호입니다.");
             } else {
-                return jwtService.createJwt(find);
+                return jwtGenerator.createJwt(find);
             }
         } catch (EmptyResultDataAccessException e) {
             e.printStackTrace();
