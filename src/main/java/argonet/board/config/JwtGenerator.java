@@ -1,4 +1,4 @@
-package argonet.board.service;
+package argonet.board.config;
 
 import argonet.board.entity.Member;
 import io.jsonwebtoken.*;
@@ -17,7 +17,7 @@ import java.util.Map;
 @Slf4j
 @Service
 @RequiredArgsConstructor
-public class JWTService {
+public class JwtGenerator {
 
     @Value("${board.key}")
     private String baseKey;
@@ -53,14 +53,12 @@ public class JWTService {
 
     public Boolean checkJwt(String jwt) throws Exception {
         try {
+            System.out.println(jwt);
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(DatatypeConverter.parseBase64Binary(baseKey))
                     .build()
                     .parseClaimsJws(jwt)
                     .getBody();
-        } catch (ExpiredJwtException e) {
-            e.printStackTrace();
-            return false;
         } catch (JwtException e) {
             e.printStackTrace();
             return false;
