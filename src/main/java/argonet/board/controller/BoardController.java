@@ -31,13 +31,13 @@ public class BoardController {
     }
 
     @PostMapping("/board/post")
-    public void postBoard(@RequestBody BoardRequest request) {
+    public void postBoard(@RequestBody BoardRequest request) throws Exception {
         boardService.saveBoard(request);
     }
 
-    @DeleteMapping("/board/{id}")
-    public void deleteBoard(@PathVariable(value = "id") Long id) {
-        boardService.remove(id);
+    @DeleteMapping("/board")
+    public void deleteBoard(@RequestBody BoardRequest request) {
+        boardService.remove(request.getId());
     }
 
     @PatchMapping("/board/modify")

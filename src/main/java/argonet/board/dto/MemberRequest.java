@@ -1,11 +1,11 @@
 package argonet.board.dto;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
+import org.springframework.lang.Nullable;
 
 @Data
 public class MemberRequest {
-    @JsonIgnore
+
     private Long id;
     private String account;
     private String name;

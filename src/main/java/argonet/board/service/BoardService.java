@@ -33,8 +33,11 @@ public class BoardService {
     }
 
     @Transactional
-    public void saveBoard(BoardRequest request) {
+    public void saveBoard(BoardRequest request) throws Exception {
         Board board = new Board(memberRepository.findById(request.getMemberId()), request.getTitle(), request.getDescription());
+        if(board.getMember() == null) {
+            throw new Exception("존재하지 않는 유저입니다.");
+        }
         boardRepository.save(board);
     }
 

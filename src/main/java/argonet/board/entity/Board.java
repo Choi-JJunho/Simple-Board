@@ -24,8 +24,7 @@ public class Board {
     @JsonIgnore
     private Member member;
 
-    @OneToMany
-    @JoinColumn(name = "board")
+    @OneToMany(mappedBy = "board")
     private List<Comment> comments;
 
     @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
@@ -44,6 +43,7 @@ public class Board {
     public void modify(String title, String description) {
         this.title = title;
         this.description = description;
+        this.updatedAt = LocalDateTime.now();
     }
 
     public void delete() {
