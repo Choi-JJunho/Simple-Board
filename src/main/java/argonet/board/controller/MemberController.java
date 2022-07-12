@@ -15,7 +15,7 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/login")
-    public String login(@RequestBody Member member) throws Exception {
+    public String login(@RequestBody MemberRequest member) throws Exception {
         return memberService.login(member);
     }
 

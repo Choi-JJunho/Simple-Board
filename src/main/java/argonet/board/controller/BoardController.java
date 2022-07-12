@@ -25,7 +25,7 @@ public class BoardController {
         return boardService.findAll();
     }
 
-    @GetMapping("/member/boards")
+    @GetMapping("/boards/member")
     public List<BoardResponse> getMemberBoards(@RequestBody MemberRequest request) {
         return boardService.findByMemberId(request.getId());
     }

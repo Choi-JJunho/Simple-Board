@@ -26,7 +26,7 @@ public class MemberService {
         memberRepository.save(member);
     }
 
-    public String login(Member member) throws Exception{
+    public String login(MemberRequest member) throws Exception{
         try {
             Member find = memberRepository.findByAccount(member.getAccount());
             if(find == null) {
