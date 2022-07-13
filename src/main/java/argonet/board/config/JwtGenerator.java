@@ -39,7 +39,7 @@ public class JwtGenerator {
         claims.put("account", member.getAccount());
 
         Date expireTime = new Date();
-        expireTime.setTime(expireTime.getTime() + 1000 * 60 * 1);
+        expireTime.setTime(expireTime.getTime() + 1000 * 600 * 1);
 
         JwtBuilder builder = Jwts.builder()
                 .setHeader(headerMap)
