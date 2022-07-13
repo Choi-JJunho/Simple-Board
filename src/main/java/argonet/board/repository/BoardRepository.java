@@ -18,13 +18,19 @@ public class BoardRepository {
     }
 
     public Board findById(Long id) {
-        return em.find(Board.class, id);
+        Board board = em.find(Board.class, id);
+        if (board.getIsDeleted()) {
+            return null;
+        } else {
+            return board;
+        }
     }
 
     public List<Board> findAll() {
         return em.createQuery("select distinct b from Board b " +
                         "join fetch b.member " +
-                        "left outer join fetch b.comments", Board.class)
+                        "left outer join fetch b.comments " +
+                        "where b.isDeleted = false", Board.class)
                 .getResultList();
     }
 
@@ -36,7 +42,7 @@ public class BoardRepository {
         return em.createQuery("select distinct b from Board b" +
                         " join fetch b.member " +
                         " left outer join fetch b.comments" +
-                        " where b.member.id = :id", Board.class)
+                        " where b.isDeleted = false and b.member.id = :id", Board.class)
                 .setParameter("id", id)
                 .getResultList();
     }

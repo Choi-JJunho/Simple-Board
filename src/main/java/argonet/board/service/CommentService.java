@@ -3,6 +3,7 @@ package argonet.board.service;
 
 import argonet.board.config.Login;
 import argonet.board.dto.CommentRequest;
+import argonet.board.dto.CommentResponse;
 import argonet.board.entity.Board;
 import argonet.board.entity.Comment;
 import argonet.board.entity.Member;
@@ -34,10 +35,11 @@ public class CommentService {
     }
 
     @Login
-    public void update(CommentRequest request) {
+    public CommentResponse update(CommentRequest request) {
         Comment comment = commentRepository.findById(request.getId());
         comment.update(request.getDescription());
         commentRepository.save(comment);
+        return new CommentResponse(comment);
     }
 
     @Login

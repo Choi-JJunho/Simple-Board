@@ -18,14 +18,14 @@ public class MemberRepository {
     }
 
     public List<Member> findAll() {
-        return em.createQuery("" +
-                "select m from Member m", Member.class)
+        return em.createQuery("select m from Member m" +
+                        " where m.isDeleted = false", Member.class)
                 .getResultList();
     }
 
     public Member findByAccount(String account) {
         return em.createQuery("select m from Member m" +
-                        " where m.account = :account", Member.class)
+                        " where m.account = :account and m.isDeleted = false", Member.class)
                 .setParameter("account", account)
                 .getSingleResult();
     }

@@ -1,6 +1,7 @@
 package argonet.board.controller;
 
 import argonet.board.dto.CommentRequest;
+import argonet.board.dto.CommentResponse;
 import argonet.board.service.CommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
@@ -16,12 +17,13 @@ public class CommentController {
     }
 
     @PatchMapping("/comment")
-    public void modifyComment(@RequestBody CommentRequest comment) {
-        commentService.update(comment);
+    public CommentResponse modifyComment(@RequestBody CommentRequest comment) {
+        return commentService.update(comment);
     }
 
     @DeleteMapping("/comment")
-    public void removeComment(@RequestBody CommentRequest comment) {
+    public String removeComment(@RequestBody CommentRequest comment) {
         commentService.remove(comment.getId());
+        return "Comment Deleted";
     }
 }
