@@ -28,8 +28,6 @@ public class BoardRepository {
 
     public List<Board> findAll() {
         return em.createQuery("select distinct b from Board b " +
-                        "join fetch b.member " +
-                        "left outer join fetch b.comments " +
                         "where b.isDeleted = false", Board.class)
                 .getResultList();
     }
@@ -40,8 +38,6 @@ public class BoardRepository {
 
     public List<Board> findByMember(Long id) {
         return em.createQuery("select distinct b from Board b" +
-                        " join fetch b.member " +
-                        " left outer join fetch b.comments" +
                         " where b.isDeleted = false and b.member.id = :id", Board.class)
                 .setParameter("id", id)
                 .getResultList();

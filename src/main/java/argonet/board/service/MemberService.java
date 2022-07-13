@@ -1,6 +1,8 @@
 package argonet.board.service;
 
-import argonet.board.config.JwtGenerator;
+import argonet.board.config.Login;
+import argonet.board.dto.MemberResponse;
+import argonet.board.util.JwtGenerator;
 import argonet.board.dto.MemberRequest;
 import argonet.board.entity.Member;
 import argonet.board.repository.MemberRepository;
@@ -10,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -20,9 +23,7 @@ public class MemberService {
 
     private final JwtGenerator jwtGenerator;
 
-    // TODO: Add Duplicate Exception
-    // TODO: Add Valid Token
-    public Long join(MemberRequest request) throws Exception {
+    public Long join(MemberRequest request) {
         Member member = new Member(request);
         memberRepository.save(member);
         return member.getId();
@@ -44,8 +45,42 @@ public class MemberService {
         return null;
     }
 
-    public List<Member> findAll() {
-        return memberRepository.findAll();
+    public List<MemberResponse> findAll() {
+        return memberRepository.findAll().stream()
+                .map(o -> new MemberResponse(o))
+                .collect(Collectors.toList());
     }
 
+    public List<MemberResponse> findByName(String name) {
+        return memberRepository.findByName(name).stream()
+                .map(o -> new MemberResponse(o))
+                .collect(Collectors.toList());
+    }
+
+    @Login
+    public void update(MemberRequest request) throws Exception {
+        Member member = memberRepository.findById(request.getId());
+        if(member != null && member.matchPassword(request.getPassword())) {
+            if (request.getPassword() == null) {
+                member.update(request.getName(), request.getEmail(), member.getPassword());
+            } else {
+                member.update(request.getName(), request.getEmail(), request.getPassword());
+            }
+            memberRepository.save(member);
+        } else {
+            throw new Exception("유효하지 않은 사용자입니다.");
+        }
+    }
+
+
+    @Login
+    public void delete(MemberRequest request) throws Exception{
+        Member member = memberRepository.findById(request.getId());
+        if(member != null && member.matchPassword(request.getPassword())) {
+            member.deleteMember();
+            memberRepository.save(member);
+        } else {
+            throw new Exception("유효하지 않은 사용자입니다.");
+        }
+    }
 }
