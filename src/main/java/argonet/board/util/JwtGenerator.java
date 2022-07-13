@@ -1,4 +1,4 @@
-package argonet.board.config;
+package argonet.board.util;
 
 import argonet.board.entity.Member;
 import io.jsonwebtoken.*;
@@ -51,18 +51,17 @@ public class JwtGenerator {
         return result;
     }
 
-    public Boolean checkJwt(String jwt) throws Exception {
+    public Long checkJwt(String jwt) throws Exception {
         try {
-            System.out.println(jwt);
             Claims claims = Jwts.parserBuilder()
                     .setSigningKey(DatatypeConverter.parseBase64Binary(baseKey))
                     .build()
                     .parseClaimsJws(jwt)
                     .getBody();
+            return Long.parseLong(claims.get("id").toString());
         } catch (JwtException e) {
             e.printStackTrace();
-            return false;
+            return (long) -1;
         }
-        return true;
     }
 }

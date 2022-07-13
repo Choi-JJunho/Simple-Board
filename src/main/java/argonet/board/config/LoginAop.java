@@ -1,7 +1,10 @@
 package argonet.board.config;
 
+import argonet.board.util.JwtGenerator;
 import lombok.RequiredArgsConstructor;
 import org.aspectj.lang.JoinPoint;
+import org.aspectj.lang.ProceedingJoinPoint;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.springframework.stereotype.Component;
@@ -21,13 +24,13 @@ public class LoginAop {
     public void checkLogin(JoinPoint joinPoint) throws Exception {
         ServletRequestAttributes requestAttributes =
                 (ServletRequestAttributes) RequestContextHolder.currentRequestAttributes();
-        HttpServletRequest request =requestAttributes.getRequest();
+        HttpServletRequest request = requestAttributes.getRequest();
         String token = request.getHeader("Authorization");
         Boolean isBearer = token.startsWith("Bearer ");
         if(token == null || !isBearer) {
             throw new Exception("Not Valid Token");
         }
-        if(!jwtGenerator.checkJwt(token.substring("Bearer ".length()))) {
+        if(jwtGenerator.checkJwt(token.substring("Bearer ".length())) < 0) {
             throw new Exception("Not Valid User...");
         }
     }

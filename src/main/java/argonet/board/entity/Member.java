@@ -48,4 +48,16 @@ public class Member {
         this.email = memberRequest.getEmail();
     }
 
+    public void update(String name, String email, String password) {
+        BCryptPasswordEncoder passwordEncoder = new BCryptPasswordEncoder();
+        this.name = name;
+        this.email = email;
+        this.password = passwordEncoder.encode(password);
+    }
+
+    public void deleteMember() {
+        this.isDeleted = true;
+        this.deletedAt = LocalDateTime.now();
+    }
+
 }
