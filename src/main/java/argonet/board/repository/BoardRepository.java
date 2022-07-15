@@ -28,7 +28,8 @@ public class BoardRepository {
 
     public List<Board> findAll() {
         return em.createQuery("select distinct b from Board b " +
-                        "where b.isDeleted = false", Board.class)
+                        "where b.isDeleted = false " +
+                        "order by b.id asc", Board.class)
                 .getResultList();
     }
 

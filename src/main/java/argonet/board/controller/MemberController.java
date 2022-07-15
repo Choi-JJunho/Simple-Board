@@ -1,46 +1,78 @@
 package argonet.board.controller;
 
+import argonet.board.dto.BoardResponse;
 import argonet.board.dto.MemberRequest;
 import argonet.board.dto.MemberResponse;
+import argonet.board.entity.Member;
 import argonet.board.service.MemberService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import javax.servlet.http.HttpServletRequest;
 import java.util.List;
 
-@RestController
+@Controller
 @RequiredArgsConstructor
 public class MemberController {
 
     private final MemberService memberService;
 
-    @GetMapping("/member/name")
-    public List<MemberResponse> findByName(@RequestBody MemberRequest request) {
-        return memberService.findByName(request.getName());
+    @GetMapping("/join")
+    public String register() {
+        return "join";
+    }
+
+    @PostMapping("/doRegister")
+    public String doRegister(HttpServletRequest request) {
+        MemberRequest member = new MemberRequest(
+                request.getParameter("account"),
+                request.getParameter("name"),
+                request.getParameter("password"),
+                request.getParameter("email")
+        );
+        memberService.join(member);
+        return "redirect:/";
+    }
+
+    @GetMapping("/login")
+    public String login() {
+        return "login";
+    }
+
+    @GetMapping("/logout")
+    public String logout() {
+        return "/";
     }
 
     @GetMapping("/members")
-    public List<MemberResponse> findAll() {
-        return memberService.findAll();
+    public String members(Model model) {
+        List<MemberResponse> members = memberService.findAll();
+        model.addAttribute("members");
+        return "members";
     }
 
-    @PostMapping("/login")
-    public String login(@RequestBody MemberRequest member) throws Exception {
-        return memberService.login(member);
+    @GetMapping("/member/info")
+    public String getMemberInfo(@AuthenticationPrincipal Member member, Model model) {
+        model.addAttribute("member", member);
+        return "memberinfo";
     }
 
-    @PostMapping("/join")
-    public Long join(@RequestBody MemberRequest member) {
-        return memberService.join(member);
+
+    @GetMapping("/member/find")
+    public String findMemberByName() {
+        return "search";
     }
 
-    @PatchMapping("/member")
-    public void update(@RequestBody MemberRequest member) throws Exception {
-        memberService.update(member);
+    @PostMapping("/member/modify")
+    public String updateMember() {
+        return "redirect:/";
     }
 
-    @DeleteMapping("/member")
-    public void delete(@RequestBody MemberRequest member) throws Exception {
-        memberService.delete(member);
+    @GetMapping("/member/delete")
+    public String removeMember() {
+        return "redirect:/";
     }
 }

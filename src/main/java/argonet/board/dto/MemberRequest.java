@@ -19,4 +19,11 @@ public class MemberRequest {
         this.password = password;
         this.email = email;
     }
+
+    public MemberRequest(String account, String name, String password, String email) {
+        this.account = account;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
 }
