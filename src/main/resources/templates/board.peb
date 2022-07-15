@@ -57,7 +57,7 @@
 
             <div class="card">
                 <div class="card-body">
-                    {{ board.description }}
+                        {{ board.description }}
                 </div>
             </div>
 
@@ -222,10 +222,10 @@
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         crossorigin="anonymous"></script>
 <script>
-    function setCommentId(comment) {
-        var id = document.getElementById('comment_id');
-        console.log(id);
-        document.getElementById('modifyComment').setAttribute('action', '/comment/' + id.getAttribute("data-id") + '/modify');
+    function getCommentId() {
+        var helpme = document.getElementById('comment_id');
+        console.log(helpme);
+        document.getElementById('modifyComment').setAttribute('action', '/comment/' + helpme.dataset.id + '/modify');
     }
 </script>
 </html>

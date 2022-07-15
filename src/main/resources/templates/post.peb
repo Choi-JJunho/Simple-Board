@@ -15,6 +15,17 @@
     <link href="/css/dashboard.css" rel="stylesheet">
     <link href="/css/header.css" rel="stylesheet">
     <link href="/css/footer.css" rel="stylesheet">
+    <link href="/css/ckeditor" rel="stylesheet">
+
+    <style>
+        .ck-editor__editable {
+            height: 400px;
+        }
+
+        .ck-content {
+            font-size: 12px;
+        }
+    </style>
 </head>
 
 
@@ -22,33 +33,35 @@
     {% include "header" %}
 
 <div id="content" style="overflow:scroll">
-    <div class="container" >
-        {% if post_id is null %}
-            <form class="navbar-search mr-4" method="post">
-                <input type="text" class="form-control bg-light"
-                       placeholder="제목"
+    <div class="container">
+
+            {% if post_id is null %}
+            <form action="/board/post" method="POST">
+                <input type="text" class="form-control bg-light mb-3"
+                       placeholder="제목" name="title"
                        aria-label="Title" aria-describedby="basic-addon2" required/>
-                <textarea type="text" class="form-control bg-light"
-                          placeholder="내용" rows="20" style="resize: none"
-                          aria-label="Content" aria-describedby="basic-addon2"></textarea>
-                <button class="nav-item btn btn-primary mr-4" type="submit">
-                    <i class="bi bi-pencil-square"></i>
-                    작성
-                </button>
+                <textarea name="description" id="editor"></textarea>
+                <p>
+                    <button class="nav-item btn btn-primary mr-4 mt-3" type="submit">
+                        <i class="bi bi-pencil-square"></i>
+                        작성
+                    </button>
+                </p>
             </form>
             {% else %}
-            <form class="navbar-search mr-4" method="post"
-                  action="/board/{{ post_id }}/modify/">
-                <input type="text" class="form-control bg-light"
-                       placeholder="제목" aria-label="Title" aria-describedby="basic-addon2" required/>
-                <textarea type="text" class="form-control bg-light" placeholder="내용" rows="20" style="resize: none"
-                          aria-label="Content" aria-describedby="basic-addon2"></textarea>
-                <button class="nav-item btn btn-primary mr-4" type="submit">
-                    <i class="bi bi-pencil-square"></i>
-                    수정
-                </button>
+            <form action="/board/{{ post_id }}/modify" method="POST">
+                <input type="text" class="form-control bg-light mb-3"
+                       placeholder="제목" name="title" value= {{ board.title }}
+                       aria-label="Title" aria-describedby="basic-addon2" required/>
+                <textarea name="description" id="editor">{{ board.description }}</textarea>
+                <p>
+                    <button class="nav-item btn btn-primary mr-4 mt-3" type="submit">
+                        <i class="bi bi-pencil-square"></i>
+                        수정
+                    </button>
+                </p>
             </form>
-        {% endif %}
+            {% endif %}
     </div>
 </div>
 </div>
@@ -59,5 +72,14 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         crossorigin="anonymous"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/34.2.0/classic/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/translations/ko.js"></script>
+
+<script>
+    ClassicEditor.create(document.querySelector('#editor'), {
+        language: "ko"
+    });
+
+</script>
 
 </html>

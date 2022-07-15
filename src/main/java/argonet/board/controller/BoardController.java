@@ -46,27 +46,39 @@ public class BoardController {
         return "home";
     }
 
+    @GetMapping("/board/post")
+    public String boardPostPage(@AuthenticationPrincipal Member member, Model model) throws Exception {
+        model.addAttribute("member", member);
+        return "post";
+    }
+
     @PostMapping("/board/post")
     public String boardPost(@AuthenticationPrincipal Member member, BoardRequest request, Model model) throws Exception {
         model.addAttribute("member", member);
         request.setMemberId(member.getId());
         boardService.saveBoard(request);
-        return "post";
+        return "redirect:/boards";
     }
 
     @GetMapping("/board/{id}")
-    public String getBoardById(@AuthenticationPrincipal Member member, @PathVariable(value = "id") Long id, Model model) {
+    public String getBoardById(@AuthenticationPrincipal Member member, @PathVariable(value = "id") Long id, Model model, HttpServletRequest request) {
         BoardResponse board = boardService.findById(id);
         model.addAttribute("board", board);
         model.addAttribute("member", member);
         return "board";
     }
 
-    @PostMapping("/board/{id}/modify")
-    public String boardModify(@AuthenticationPrincipal Member member,@PathVariable(value = "id") Long id, HttpServletRequest request, Model model) {
+    @GetMapping("/board/{id}/modify")
+    public String boardModifyPage(@AuthenticationPrincipal Member member, @PathVariable Long id, Model model) {
+        model.addAttribute("post_id", id);
         BoardResponse board = boardService.findById(id);
         model.addAttribute("board", board);
         model.addAttribute("member", member);
+        return "post";
+    }
+    @PostMapping("/board/{id}/modify")
+    public String boardModify(@AuthenticationPrincipal Member member, @PathVariable(value = "id") Long id, BoardRequest request, Model model) {
+        boardService.update(request);
         return "redirect:/boards";
     }
 
