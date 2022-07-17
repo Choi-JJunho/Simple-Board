@@ -32,9 +32,8 @@
 <body>
     {% include "header" %}
 
-<div id="content" style="overflow:scroll">
+<div id="wrapper">
     <div class="container">
-
             {% if post_id is null %}
             <form action="/board/post" method="POST">
                 <input type="text" class="form-control bg-light mb-3"
@@ -53,7 +52,7 @@
                 <input type="text" class="form-control bg-light mb-3"
                        placeholder="제목" name="title" value= {{ board.title }}
                        aria-label="Title" aria-describedby="basic-addon2" required/>
-                <textarea name="description" id="editor">{{ board.description }}</textarea>
+                <textarea name="description" id="editor" required>{{ board.description }}</textarea>
                 <p>
                     <button class="nav-item btn btn-primary mr-4 mt-3" type="submit">
                         <i class="bi bi-pencil-square"></i>
@@ -64,8 +63,8 @@
             {% endif %}
     </div>
 </div>
-</div>
     {% include "footer" %}
+</div>
 </body>
 
 <!-- JavaScript Bundle with Popper -->

@@ -51,10 +51,9 @@ public class Member implements UserDetails {
         this.email = memberRequest.getEmail();
     }
 
-    public void update(String name, String email, String password) {
-        this.name = name;
-        this.email = email;
-        this.password = passwordEncoder().encode(password);
+    public void update(String name, String email) {
+        this.name = (name != null) ? name : this.name;
+        this.email = (email != null) ? email : this.email;
     }
 
     public void deleteMember() {

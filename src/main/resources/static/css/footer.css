@@ -48,15 +48,13 @@
     white-space: nowrap;
     -webkit-overflow-scrolling: touch;
 }
-
 #wrapper{
     height: auto;
     min-height: 100%;
-    padding-bottom: 8px;
+    padding-bottom: 28px;
 }
-
 footer{
-    height: 8px;
+    height: 28px;
     position : relative;
     transform : translateY(-100%);
 }

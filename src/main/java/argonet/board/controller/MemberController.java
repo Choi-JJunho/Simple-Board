@@ -67,8 +67,11 @@ public class MemberController {
     }
 
     @PostMapping("/member/modify")
-    public String updateMember() {
-        return "redirect:/";
+    public String updateMember(@AuthenticationPrincipal Member member, MemberRequest request) throws Exception {
+        request.setId(member.getId());
+        memberService.update(request);
+        member.update(request.getName(), request.getEmail());
+        return "redirect:/member/info";
     }
 
     @GetMapping("/member/delete")

@@ -22,7 +22,7 @@
     {% include "header" %}
 
 <!-- Content Wrapper -->
-<div id="wrapper" class="d-flex flex-column" style="overflow:auto">
+<div id="wrapper" class="d-flex flex-column">
     <!-- Main Content -->
     <div id="content">
         <div class="container">
@@ -56,8 +56,17 @@
             </div>
 
             <div class="card">
-                <div class="card-body">
-                        {{ board.description }}
+                <div id="board-content" class="card-body fs-4" style="min-height: 500px">
+                    <script>
+                        let content = '{{ board.description }}';
+                        content = content.replaceAll("&lt;", "<");
+                        content = content.replaceAll("&gt;", ">");
+                        content = content.replaceAll("&amp;lt;", "<");
+                        content = content.replaceAll("&amp;gt;", ">");
+                        content = content.replaceAll("&amp;nbsp;", " ");
+                        content = content.replaceAll("&amp;amp", "&");
+                        document.getElementById('board-content').innerHTML = content;
+                    </script>
                 </div>
             </div>
 
@@ -112,25 +121,27 @@
                                 <div class="row">
                                     <!--writer name-->
                                     <div class="row text-left">
-                                        작성자 {{ comment.memberName }}
+                                        <strong>{{ comment.memberName }}</strong>
                                     </div>
 
                                     <div class="row text-left">
-                                        내용 {{ comment.description }}
+                                        <div data-idvalue="{
+                                        { comment.id }}">{{ comment.description }}</div>
                                     </div>
 
                                     <!--created at-->
                                     <div class="row text-left">
-                                        작성일자 {{ comment.createdAt }}
+                                        <span>{{ comment.createdAt }}</span>
                                     </div>
                                 </div>
                                 <!--action-->
                                 <div class="row align-self-end">
                                     <div class="row justify-content-end m-1">
                                         <!--modify comment-->
-                                        {% if member.id == board.memberId %}
+                                        {% if member.id == comment.memberId %}
                                             <div class="col">
-                                                <button type="button" class="btn btn-primary pl-2 pr-2 pb-1 pt-1 ml-2"
+                                                <button type="button"
+                                                        class="comment-modify btn btn-primary pl-2 pr-2 pb-1 pt-1 ml-2"
                                                         data-id={{ comment.id }} data-bs-toggle="modal"
                                                         data-bs-target="#modifyModal">
                                                     수정
@@ -160,20 +171,20 @@
                 <hr>
             </div>
             </li>
-        </div>
-        <!--create comment-->
-        <div class="card-body">
-            <form action=/board/{{ board.id }}/comment/post method="post">
+            <!--create comment-->
+            <div class="card-body">
+                <form action=/board/{{ board.id }}/comment/post method="post">
 
-                <!--content-->
-                <textarea type="text" style="resize: none" class="form-control" aria-label="Content"
-                          rows="5" name="description" required></textarea>
+                    <!--content-->
+                    <textarea type="text" style="resize: none" class="form-control" aria-label="Content"
+                              rows="5" name="description" required></textarea>
 
-                <!--submit-->
-                <button type="submit" class="btn btn-dark mt-3">
-                    작성
-                </button>
-            </form>
+                    <!--submit-->
+                    <button type="submit" class="btn btn-dark mt-3">
+                        작성
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 </div>
@@ -191,16 +202,14 @@
                 </button>
             </div>
 
-            <form id="modifyComment" action="" method="post">
+            <form id="modifyComment" method="post">
                 <div class="modal-body">
                     <input type="hidden" id="modifyCommentId">
                     <textarea type="text" style="resize: none" class="form-control"
                               id="modifyCommentContent"
-                              aria-label="Content"
-                              rows="5" required>
-                                </textarea>
+                              aria-label="Content" name="description"
+                              rows="5" required></textarea>
                 </div>
-
                 <div class="modal-footer">
                     <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
                     <button type="submit" class="btn btn-primary">수정</button>
@@ -222,10 +231,18 @@
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         crossorigin="anonymous"></script>
 <script>
-    function getCommentId() {
-        var helpme = document.getElementById('comment_id');
-        console.log(helpme);
-        document.getElementById('modifyComment').setAttribute('action', '/comment/' + helpme.dataset.id + '/modify');
+    function getCommentId(event) {
+        const {target} = event;
+        document.getElementById('modifyComment').action = `/board/{{ board.id }}/comment/${target.dataset.id}/modify`
+        document.getElementById('modifyCommentId').value = target.dataset.id;
+        document.getElementById('modifyCommentContent').value = document.querySelector(`[data-idvalue='${target.dataset.id}']`).innerHTML;
     }
+
+    const comments = document.querySelectorAll('.comment-modify');
+
+    comments.forEach((comment) => {
+        comment.addEventListener('click', getCommentId);
+    })
+
 </script>
 </html>

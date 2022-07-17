@@ -1,9 +1,11 @@
 package argonet.board.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 @Data
+@NoArgsConstructor
 public class MemberRequest {
 
     private Long id;

@@ -2,8 +2,8 @@ package argonet.board.dto;
 
 import argonet.board.entity.Board;
 import lombok.Data;
+import org.jsoup.Jsoup;
 
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -29,5 +29,14 @@ public class BoardResponse {
                 .collect(Collectors.toList());
         this.memberName = board.getMember().getName();
         this.createdAt = board.getCreatedAt().format(DateTimeFormatter.ISO_DATE);
+    }
+
+    public void simpleDescription() {
+        String text = Jsoup.parse(this.description).text();
+        if (text.length() > 20) {
+            this.description = (text.substring(0, 20)) + "...";
+        } else {
+            this.description = text;
+        }
     }
 }

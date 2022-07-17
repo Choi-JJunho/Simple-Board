@@ -67,6 +67,9 @@ public class MemberService implements UserDetailsService {
 
     public void update(MemberRequest request) throws Exception {
         Member member = memberRepository.findById(request.getId());
+        member.update(request.getName(), request.getEmail());
+        memberRepository.save(member);
+        /*
         if (member != null && member.matchPassword(request.getPassword())) {
             if (request.getPassword() == null) {
                 member.update(request.getName(), request.getEmail(), member.getPassword());
@@ -77,6 +80,7 @@ public class MemberService implements UserDetailsService {
         } else {
             throw new Exception("유효하지 않은 사용자입니다.");
         }
+        */
     }
 
 
