@@ -4,10 +4,10 @@ import argonet.board.dto.BoardRequest;
 import argonet.board.dto.BoardResponse;
 import argonet.board.dto.FiledataRequest;
 import argonet.board.dto.FiledataResponse;
-import argonet.board.entity.Filedata;
 import argonet.board.entity.Member;
 import argonet.board.service.BoardService;
 import argonet.board.service.FiledataService;
+import argonet.board.util.SortRule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
@@ -44,12 +44,30 @@ public class BoardController {
     String filePath;
 
     @GetMapping({"/", "/home"})
-    public String homeView(Model model, @AuthenticationPrincipal Member member) {
-        List<BoardResponse> boards = boardService.findAll();
+    public String homeView(Model model, @AuthenticationPrincipal Member member,
+                           HttpServletRequest request) {
+        boardView(member, 1, model, request);
+        return "home";
+    }
+
+    @GetMapping("/{page}")
+    public String boardsPage(@AuthenticationPrincipal Member member, @PathVariable(value = "page") int page,
+                             Model model, HttpServletRequest request) throws Exception {
+        boardView(member, page, model, request);
+        return "home";
+    }
+
+    private void boardView(Member member, int page, Model model, HttpServletRequest request) {
         model.addAttribute("member", member);
+        SortRule sortRule = SortRule.DEFAULT;
+        if(request.getParameter("sort-rule") != null) {
+            sortRule = SortRule.valueOf(request.getParameter("sort-rule"));
+        }
+        List<BoardResponse> boards = boardService.findBySortRule(sortRule, page);
         boards = simpleDescription(boards);
         model.addAttribute("boards", boards);
-        return "home";
+        model.addAttribute("board_size", boards.size());
+        model.addAttribute("page", page);
     }
 
     private List<BoardResponse> simpleDescription(List<BoardResponse> boards) {

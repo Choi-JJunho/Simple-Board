@@ -2,6 +2,7 @@ package argonet.board.repository;
 
 import argonet.board.entity.Board;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
@@ -30,6 +31,16 @@ public class BoardRepository {
         return em.createQuery("select distinct b from Board b " +
                         "where b.isDeleted = false " +
                         "order by b.id asc", Board.class)
+                .getResultList();
+    }
+
+    public List<Board> findBySortRule(String sortRule, int page) {
+        int start = (page - 1) * 10;
+        return em.createQuery("select b from Board b "+
+                "where b.isDeleted = false " +
+                "order by "+ sortRule, Board.class)
+                .setFirstResult(start)
+                .setMaxResults(start + 10)
                 .getResultList();
     }
 
