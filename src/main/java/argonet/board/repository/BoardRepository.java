@@ -43,4 +43,10 @@ public class BoardRepository {
                 .setParameter("id", id)
                 .getResultList();
     }
+
+    public Long findLastIndex() {
+        return em.createQuery("select b.id from Board b " +
+                "order by b.id desc", Long.class).setMaxResults(1)
+                .getSingleResult();
+    }
 }

@@ -2,26 +2,46 @@ package argonet.board.controller;
 
 import argonet.board.dto.BoardRequest;
 import argonet.board.dto.BoardResponse;
+import argonet.board.dto.FiledataRequest;
+import argonet.board.dto.FiledataResponse;
+import argonet.board.entity.Filedata;
 import argonet.board.entity.Member;
 import argonet.board.service.BoardService;
+import argonet.board.service.FiledataService;
 import lombok.RequiredArgsConstructor;
-import org.jsoup.Jsoup;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.ContentDisposition;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
+import java.io.File;
+import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.UUID;
 
 @Controller
 @RequiredArgsConstructor
 public class BoardController {
 
     private final BoardService boardService;
+    private final FiledataService filedataService;
+
+    @Value("${spring.servlet.multipart.location}")
+    String filePath;
 
     @GetMapping({"/", "/home"})
     public String homeView(Model model, @AuthenticationPrincipal Member member) {
@@ -37,17 +57,6 @@ public class BoardController {
             board.simpleDescription();
         }
         return boards;
-    }
-
-    @GetMapping("/boards")
-    public String getboards(Model model, @AuthenticationPrincipal Member member) {
-        List<BoardResponse> boards = boardService.findAll();
-        for (BoardResponse board : boards) {
-            board.simpleDescription();
-        }
-        model.addAttribute("boards", boards);
-        model.addAttribute("member", member);
-        return "home";
     }
 
     @GetMapping("/boards/member")
@@ -72,14 +81,16 @@ public class BoardController {
         model.addAttribute("member", member);
         request.setMemberId(member.getId());
         boardService.saveBoard(request);
-        return "redirect:/boards";
+        return "redirect:/";
     }
 
     @GetMapping("/board/{id}")
     public String getBoardById(@AuthenticationPrincipal Member member, @PathVariable(value = "id") Long id, Model model, HttpServletRequest request) {
         BoardResponse board = boardService.findById(id);
+        List<FiledataResponse> files = filedataService.findByBoardId(id);
         model.addAttribute("board", board);
         model.addAttribute("member", member);
+        model.addAttribute("files", files);
         return "board";
     }
 
@@ -103,5 +114,45 @@ public class BoardController {
         if (member != null) boardService.remove(id);
         return "redirect:/";
     }
+    @PostMapping("/board/{id}/image/upload")
+    public String upload(@AuthenticationPrincipal Member member,
+                         @RequestParam MultipartFile[] uploadfile,
+                         @PathVariable(value = "id") Long id,
+                         Model model) throws IOException, IllegalStateException {
+        List<FiledataRequest> files = new ArrayList<>();
+        for (MultipartFile file : uploadfile) {
+            FiledataRequest data = new FiledataRequest(UUID.randomUUID().toString(),
+                    file.getOriginalFilename(),
+                    file.getContentType(), id, member.getId());
+            files.add(data);
+            File newFilename = new File(data.getUuid() + "_" + data.getName());
+            file.transferTo(newFilename);
+        }
+        filedataService.save(files);
+        model.addAttribute("files", files);
+        return "redirect:/board/"+id;
+    }
 
+    @GetMapping("/board/{id}/download")
+    public ResponseEntity<Resource> download(@ModelAttribute FiledataRequest file) throws IOException {
+        Path path = Paths.get(filePath+"/"+file.getUuid()+"_"+file.getName());
+        String type = Files.probeContentType(path);
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentDisposition(ContentDisposition.
+                builder("attachment").
+                filename(file.getName(), StandardCharsets.UTF_8).build());
+        headers.add(HttpHeaders.CONTENT_TYPE, type);
+
+        org.springframework.core.io.Resource resource = new InputStreamResource(Files.newInputStream(path));
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/board/{id}/image/delete/{file_id}")
+    public String deletdImage(@AuthenticationPrincipal Member member, @ModelAttribute FiledataRequest file,
+                              @PathVariable(value = "id") Long id,
+                              @PathVariable(value = "file_id") Long fileId) throws IOException {
+        Path path = Paths.get(filePath+"/"+file.getUuid()+"_"+file.getName());
+        filedataService.remove(fileId, String.valueOf(path));
+        return "redirect:/board/"+id;
+    }
 }

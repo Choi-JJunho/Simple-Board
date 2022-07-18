@@ -67,4 +67,8 @@ public class BoardService {
                 .map(o -> new BoardResponse(o))
                 .collect(Collectors.toList());
     }
+
+    public Long getLastindex() {
+        return boardRepository.findLastIndex();
+    }
 }

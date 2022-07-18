@@ -19,6 +19,7 @@
 
     <style>
         .ck-editor__editable {
+            margin-top: 5px;
             height: 400px;
         }
 
@@ -39,7 +40,7 @@
                 <input type="text" class="form-control bg-light mb-3"
                        placeholder="제목" name="title"
                        aria-label="Title" aria-describedby="basic-addon2" required/>
-                <textarea name="description" id="editor"></textarea>
+                <textarea name="description" id="editor" readonly></textarea>
                 <p>
                     <button class="nav-item btn btn-primary mr-4 mt-3" type="submit">
                         <i class="bi bi-pencil-square"></i>
@@ -51,7 +52,7 @@
             <form action="/board/{{ post_id }}/modify" method="POST">
                 <input type="text" class="form-control bg-light mb-3"
                        placeholder="제목" name="title" value= {{ board.title }}
-                       aria-label="Title" aria-describedby="basic-addon2" required/>
+                               aria-label="Title" aria-describedby="basic-addon2" required/>
                 <textarea name="description" id="editor" required>{{ board.description }}</textarea>
                 <p>
                     <button class="nav-item btn btn-primary mr-4 mt-3" type="submit">
@@ -75,10 +76,16 @@
 <script src="https://cdn.ckeditor.com/ckeditor5/34.0.0/classic/translations/ko.js"></script>
 
 <script>
-    ClassicEditor.create(document.querySelector('#editor'), {
-        language: "ko"
-    });
 
+    const editor = ClassicEditor
+            .create(document.querySelector('#editor'), {
+                language: "ko",
+                simpleUpload:
+                        {
+                            uploadUrl: "/upload/image",
+                            withCredentials: true,
+                        }
+            });
 </script>
 
 </html>
