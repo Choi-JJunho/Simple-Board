@@ -33,7 +33,7 @@ public class BoardService {
                 .collect(Collectors.toList());
     }
 
-    @Login
+
     @Transactional
     public void saveBoard(BoardRequest request) throws Exception {
         Board board = new Board(memberRepository.findById(request.getMemberId()), request.getTitle(), request.getDescription());
@@ -44,7 +44,7 @@ public class BoardService {
     }
 
     // soft delete
-    @Login
+
     @Transactional
     public void remove(Long id) {
         Board board = boardRepository.findById(id);
@@ -52,7 +52,7 @@ public class BoardService {
         boardRepository.save(board);
     }
 
-    @Login
+
     @Transactional
     public BoardResponse update(BoardRequest request) {
         Board board = boardRepository.findById(request.getId());
@@ -66,5 +66,9 @@ public class BoardService {
         return boards.stream()
                 .map(o -> new BoardResponse(o))
                 .collect(Collectors.toList());
+    }
+
+    public Long getLastindex() {
+        return boardRepository.findLastIndex();
     }
 }

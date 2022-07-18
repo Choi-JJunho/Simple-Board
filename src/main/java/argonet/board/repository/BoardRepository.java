@@ -28,7 +28,8 @@ public class BoardRepository {
 
     public List<Board> findAll() {
         return em.createQuery("select distinct b from Board b " +
-                        "where b.isDeleted = false", Board.class)
+                        "where b.isDeleted = false " +
+                        "order by b.id asc", Board.class)
                 .getResultList();
     }
 
@@ -41,5 +42,11 @@ public class BoardRepository {
                         " where b.isDeleted = false and b.member.id = :id", Board.class)
                 .setParameter("id", id)
                 .getResultList();
+    }
+
+    public Long findLastIndex() {
+        return em.createQuery("select b.id from Board b " +
+                "order by b.id desc", Long.class).setMaxResults(1)
+                .getSingleResult();
     }
 }

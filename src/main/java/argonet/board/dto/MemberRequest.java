@@ -1,9 +1,11 @@
 package argonet.board.dto;
 
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.lang.Nullable;
 
 @Data
+@NoArgsConstructor
 public class MemberRequest {
 
     private Long id;
@@ -14,6 +16,13 @@ public class MemberRequest {
 
     public MemberRequest(Long id, String account, String name, String password, String email) {
         this.id = id;
+        this.account = account;
+        this.name = name;
+        this.password = password;
+        this.email = email;
+    }
+
+    public MemberRequest(String account, String name, String password, String email) {
         this.account = account;
         this.name = name;
         this.password = password;

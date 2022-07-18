@@ -18,11 +18,10 @@ public class CommentRepository {
     }
 
     public Comment findById(Long id) {
-        Comment comment = em.find(Comment.class, id);
-        if(comment.getIsDeleted()) {
-            return null;
-        } else {
-            return comment;
-        }
+        return em.find(Comment.class, id);
+    }
+
+    public void remove(Comment comment) {
+        em.remove(comment);
     }
 }
