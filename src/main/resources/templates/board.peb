@@ -82,7 +82,7 @@
                             <span>{{ file.name }}</span>
                             <a href="/board/{{ board.id }}/download?uuid={{ file.uuid }}&name={{ file.name }}">[download]</a>
                             {% if file.memberId == member.id %}
-                                <form action="/board/{{ board.id }}/image/delete/{{ file.id }}"
+                                <form action="/board/{{ board.id }}/image/delete/{{ file.id }}?uuid={{ file.uuid }}&name={{ file.name }}"
                                       method="post">
                                     <button class="btn btn-danger  ml-1" type="submit">
                                         삭제

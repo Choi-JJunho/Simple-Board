@@ -42,6 +42,7 @@ public class FiledataService {
 
     public void remove(Long id, String path) {
         File target = new File(String.valueOf(path));
+        System.out.println(String.valueOf(path));
         target.delete();
         Filedata file = fileDataRepository.findOne(id);
         fileDataRepository.remove(file);
