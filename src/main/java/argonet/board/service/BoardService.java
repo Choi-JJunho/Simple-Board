@@ -1,12 +1,10 @@
 package argonet.board.service;
 
-import argonet.board.config.Login;
 import argonet.board.dto.BoardRequest;
 import argonet.board.dto.BoardResponse;
 import argonet.board.entity.Board;
 import argonet.board.repository.BoardRepository;
 import argonet.board.repository.MemberRepository;
-import argonet.board.util.SortRule;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -61,50 +59,70 @@ public class BoardService {
         return new BoardResponse(board);
     }
 
-    public List<BoardResponse> findByMemberId(Long id) {
-        List<Board> boards = boardRepository.findByMember(id);
+    public List<BoardResponse> findByMemberId(Long id, String sorter, int page) {
+        List<Board> boards = boardRepository.findByMember(id, getsorter(sorter), page);
         return boards.stream()
                 .map(o -> new BoardResponse(o))
                 .collect(Collectors.toList());
     }
 
-    public List<BoardResponse> findBySortRule(SortRule rule, int page) {
+    public List<BoardResponse> findBySortRule(String sorter, int page) {
+            String runby = getsorter(sorter);
+            return boardRepository.findBySortRule(runby, page).stream()
+                    .map(o -> new BoardResponse(o))
+                .collect(Collectors.toList());
+    }
+
+    private String getsorter(String rule) {
         String runby;
         switch (rule) {
-            case DATE_ASC:
+            case "dateAsc":
                 runby = "b.createdAt ASC";
                 break;
-            case DATE_DESC:
+            case "dateDesc":
                 runby = "b.createdAt DESC";
                 break;
-            case WRITER_ASC:
+            case "writerAsc":
                 runby = "b.member.name ASC";
                 break;
-            case WRITER_DESC:
+            case "writerDesc":
                 runby = "b.member.name DESC";
                 break;
-            case TITLE_ASC:
+            case "titleAsc":
                 runby = "b.title ASC";
                 break;
-            case TITLE_DESC:
+            case "titleDesc":
                 runby = "b.title DESC";
                 break;
-            case DESC_ASC:
+            case "descriptionAsc":
                 runby = "b.description ASC";
                 break;
-            case DESC_DESC:
+            case "descriptionDesc":
                 runby = "b.description DESC";
                 break;
             default:
                 runby = "b.id ASC";
                 break;
         }
-        return boardRepository.findBySortRule(runby, page).stream()
-                .map(o -> new BoardResponse(o))
-                .collect(Collectors.toList());
+        return runby;
     }
 
-    public Long getLastindex() {
-        return boardRepository.findLastIndex();
+    public List<BoardResponse> searchBoard(String content, String category, int page, String sorter) {
+        String runby = getsorter(sorter);
+        switch (category) {
+            case "writer":
+                return boardRepository.findByWriter(content, page, runby).stream()
+                        .map(o -> new BoardResponse(o))
+                        .collect(Collectors.toList());
+            case "description":
+                return boardRepository.findByDescription(content, page, runby).stream()
+                        .map(o -> new BoardResponse(o))
+                        .collect(Collectors.toList());
+            case "title":
+            default:
+                return boardRepository.findByTitle(content, page, runby).stream()
+                        .map(o -> new BoardResponse(o))
+                        .collect(Collectors.toList());
+        }
     }
 }

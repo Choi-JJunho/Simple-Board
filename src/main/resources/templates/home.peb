@@ -1,4 +1,5 @@
-<html lang="en">
+<!Doctype HTML>
+<html lang="ko">
 <head>
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -10,7 +11,6 @@
     <!-- CSS only -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
-
     <link href="/css/dashboard.css" rel="stylesheet">
     <link href="/css/header.css" rel="stylesheet">
     <link href="/css/footer.css" rel="stylesheet">
@@ -28,7 +28,7 @@
 
             <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
-                <li><a href="/boards/member" class="nav-link px-2 link-dark">MyBoards</a></li>
+                <li><a href="/member/boards" class="nav-link px-2 link-dark">MyBoards</a></li>
                 <li><a href="/member/info" class="nav-link px-2 link-dark">UserInfo</a></li>
             </ul>
 
@@ -53,32 +53,82 @@
     <div id="wrapper" class="container-fluid">
         <div class="row">
             <main class="ms-sm-auto px-md-5">
-                <div class="chartjs-size-monitor">
-                    <div class="chartjs-size-monitor-expand">
-                        <div class=""></div>
-                    </div>
-                    <div class="chartjs-size-monitor-shrink">
-                        <div class=""></div>
-                    </div>
+                <div class="input-group">
+                    <input id="search-input" type="text" class="form-control" placeholder="제목으로 검색하기">
+                    <button id="search-submit" type="button" class="btn btn-outline-secondary">Search</button>
+                    <select id="category" class="form-select- ml-2" onchange="changeSelect()">
+                        <option value="title">제목으로 찾기</option>
+                        <option value="description">본문으로 찾기</option>
+                        <option value="writer">작성자로 찾기</option>
+                    </select>
                 </div>
                 <h2>Board List</h2>
-                <div class="table-responsive" >
+                <div class="table-responsive">
                     <div id="current-sort-role" name="sort-rule" style="display:none"></div>
                     <table class="table table-striped table-sm align-middle">
                         <thead>
                         <tr>
                             <th scope="col">번호</th>
                             <th scope="col">제목
-                                <button type="submit" class="sort-setter" data-rule="TITLE_">▽</button>
+                                {% if sorter == "titleDesc" %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
+                                         data-value="titleAsc">
+                                        <path onclick="this.disabled=true"
+                                              d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
+                                         data-value="titleDesc">
+                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    </svg>
+                                {% endif %}
                             </th>
                             <th scope="col">본문
-                                <button class="sort-setter" data-rule="DESC_">▽</button>
+                                {% if sorter == "descriptionDesc" %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
+                                         data-value="descriptionAsc">
+                                        <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
+                                         data-value="descriptionDesc">
+                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    </svg>
+                                {% endif %}
                             </th>
                             <th scope="col">작성자
-                                <button class="sort-setter" data-rule="WRITER_">▽</button>
+                                {% if sorter == "writerDesc" %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
+                                         data-value="writerAsc">
+                                        <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
+                                         data-value="writerDesc">
+                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    </svg>
+                                {% endif %}
                             </th>
                             <th scope="col">작성일
-                                <button class="sort-setter" data-rule="DATE_">▽</button>
+                                {% if sorter == "dateDesc" %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
+                                         data-value="dateAsc">
+                                        <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
+                                         data-value="dateDesc">
+                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    </svg>
+                                {% endif %}
                             </th>
                         </tr>
                         </thead>
@@ -104,20 +154,21 @@
         </div>
 
         <nav aria-label="Page navigation example" class="mt-3">
-            <ul class="pagination justify-content-center">
+            <ul id="paginationParent" class="pagination justify-content-center">
                 <li class="page-item disabled">
-                    <a class="page-link">Previous</a>
+                    <a class="page-link" href="?page={{ page-1 }}">Previous</a>
                 </li>
                 </li>
                 <li class="page-item active" aria-current="page">
-                    <a class="page-link" href="/1">1</a>
+                    <a class="page-link" href="?page=1">1</a>
                 </li>
-                <li class="page-item"><a class="page-link" href="/2">2</a></li>
-
-                <li class="page-item"><a class="page-link" href="/3">3</a></li>
-
+                {% for i in range(2, board_size+2)%}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
                 <li class="page-item disabled">
-                    <a class="page-link" href="/page/{{ page+1 }}">Next</a>
+                    <a class="page-link" href="?page={{ page+1 }}">Next</a>
                 </li>
             </ul>
         </nav>
@@ -130,39 +181,100 @@
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
         integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
         crossorigin="anonymous"></script>
-<script>
 
-    function setRules(button) {
-        let {target} = button;
-        let roleSet = document.getElementById('current-sort-role');
-        if(target.name === 'null') {
-            target.name = target.dataset.rule + "ASC";
-            target.innerHTML = '▽';
-            roleSet.innerText = target.name;
-        } else if(target.name.toString().substring(target.name.length - 3) === "ASC") {
-            target.name = target.dataset.rule + "DESC";
-            target.innerHTML = '△';
-            roleSet.innerText = target.name;
-        } else {
-            target.name = 'null';
-            target.innerHTML = '▽';
-            roleSet.innerText = "DEFAULT";
+<script>
+    // Sorting logic
+    const buttons = document.querySelectorAll(`.sort-setter`);
+
+    const caretUp = 'M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z';
+
+    function sortFunc(event) {
+        console.log(event.target.tagName);
+        if (event.target.tagName === 'svg' || event.target.tagName === 'SVG') {
+            const targetVal = "" + event.target.dataset.value;
+            /*if (targetVal.substring(targetVal.length - 3) === "Asc") {
+                event.target.dataset.value = targetVal.substring(0, targetVal.length - 3) + "Desc";
+            } else {
+                event.target.dataset.value = targetVal.substring(0, targetVal.length - 4) + "Asc";
+            }*/
+            window.location.replace("?page={{ page }}&sorter=" + targetVal);
         }
     }
 
-    const buttons = document.querySelectorAll(`.sort-setter`);
-
     buttons.forEach((button) => {
-        button.addEventListener('click', setRules);
+        button.addEventListener('click', sortFunc);
     })
+</script>
 
-    const pages = document.querySelectorAll('.page-item');
+<script>
+    //Search logic
+    let baseUrl = "?page={{ page }}&sorter={{ sorter }}";
+    let tempUrl;
 
+    function changeSelect() {
+        const selectList = document.getElementById("category");
+        const searchInput = document.getElementById("search-input");
+        tempUrl = "&category=";
+        if (selectList.options[selectList.selectedIndex].value === 'title') {
+            tempUrl = tempUrl.concat("title");
+            searchInput.placeholder = "제목으로 검색하기";
+        } else if (selectList.options[selectList.selectedIndex].value === 'description') {
+            tempUrl = tempUrl.concat("description");
+            searchInput.placeholder = "본문으로 검색하기";
+        } else if (selectList.options[selectList.selectedIndex].value === 'writer') {
+            tempUrl = tempUrl.concat("writer");
+            searchInput.placeholder = "작성자로 검색하기";
+        }
+        selectList.options[selectList.selectedIndex].selected = true;
+    }
+
+    document.getElementById('search-input').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            doSearch();
+        }
+    });
+    document.getElementById('search-submit').addEventListener('click', doSearch);
+
+    function doSearch() {
+        const searchDesc = "" + document.getElementById('search-input').value
+        if (tempUrl === undefined) tempUrl = "&category=title";
+        window.location.replace('?page={{ page }}&sorter={{ sorter }}'.concat(tempUrl, "&search=", "" + searchDesc));
+    }
+</script>
+
+<script>
+    let pages = document.querySelectorAll('#paginationParent li a');
+    let addUrl = "&sorter={{ sorter }}&search={{ search }}&category={{ category }}";
     pages.forEach((page) => {
-        page.addEventListener('click', function(){
-            pages.classList.remove("active");
-            page.classList.add("active");
-        })
+        if ("" + page.innerText === "" +{{ page }}) {
+            page.parentElement.classList.add('active');
+        } else {
+            page.parentElement.classList.remove('active');
+        }
+
+        if (page.innerText === 'Previous') {
+            if ({{ page }} <=
+            1
+        )
+            {
+                page.parentElement.classList.add('disabled');
+            }
+        else
+            {
+                page.parentElement.classList.remove('disabled');
+            }
+        } else if (page.innerText === 'Next') {
+            if ({{ page }} < {{ board_size + 2 }})
+            {
+                page.parentElement.classList.remove('disabled');
+            }
+        else
+            {
+                page.parentElement.classList.add('disabled');
+            }
+        }
+        const baseUrl = page.getAttribute('href');
+        page.setAttribute('href', baseUrl.concat(addUrl));
     })
 </script>
 
