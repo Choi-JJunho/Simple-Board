@@ -101,7 +101,7 @@ public class BoardService {
                 runby = "b.description DESC";
                 break;
             default:
-                runby = "b.id ASC";
+                runby = "b.id DESC";
                 break;
         }
         return runby;
@@ -124,5 +124,9 @@ public class BoardService {
                         .map(o -> new BoardResponse(o))
                         .collect(Collectors.toList());
         }
+    }
+
+    public Long getBoardsCount() {
+        return boardRepository.findBoardsCount();
     }
 }

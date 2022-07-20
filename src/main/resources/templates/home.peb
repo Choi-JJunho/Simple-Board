@@ -162,7 +162,7 @@
                 <li class="page-item active" aria-current="page">
                     <a class="page-link" href="?page=1">1</a>
                 </li>
-                {% for i in range(2, board_size+2)%}
+                {% for i in range(2, board_size+1)%}
                     <li class="page-item">
                         <a class="page-link" href="?page={{ i }}">{{ i }}</a>
                     </li>
@@ -189,15 +189,16 @@
     const caretUp = 'M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z';
 
     function sortFunc(event) {
+        let addUrl = "&search={{ search }}&category={{ category }}";
         console.log(event.target.tagName);
         if (event.target.tagName === 'svg' || event.target.tagName === 'SVG') {
-            const targetVal = "" + event.target.dataset.value;
+            const sortVal = "" + event.target.dataset.value;
             /*if (targetVal.substring(targetVal.length - 3) === "Asc") {
                 event.target.dataset.value = targetVal.substring(0, targetVal.length - 3) + "Desc";
             } else {
                 event.target.dataset.value = targetVal.substring(0, targetVal.length - 4) + "Asc";
             }*/
-            window.location.replace("?page={{ page }}&sorter=" + targetVal);
+            window.location.replace("?page={{ page }}&sorter=" + sortVal + addUrl);
         }
     }
 
@@ -237,12 +238,12 @@
 
     function doSearch() {
         const searchDesc = "" + document.getElementById('search-input').value
-        if (tempUrl === undefined) tempUrl = "&category=title";
-        window.location.replace('?page={{ page }}&sorter={{ sorter }}'.concat(tempUrl, "&search=", "" + searchDesc));
+        if (tempUrl === undefined) tempUrl = "&category=";
+        window.location.replace('?sorter={{ sorter }}'.concat(tempUrl, "&search=", "" + searchDesc));
     }
 </script>
 
-<script>
+<script> // Pagination
     let pages = document.querySelectorAll('#paginationParent li a');
     let addUrl = "&sorter={{ sorter }}&search={{ search }}&category={{ category }}";
     pages.forEach((page) => {
@@ -253,9 +254,7 @@
         }
 
         if (page.innerText === 'Previous') {
-            if ({{ page }} <=
-            1
-        )
+            if ({{ page }} <= 1)
             {
                 page.parentElement.classList.add('disabled');
             }
@@ -264,7 +263,7 @@
                 page.parentElement.classList.remove('disabled');
             }
         } else if (page.innerText === 'Next') {
-            if ({{ page }} < {{ board_size + 2 }})
+            if ({{ page }} < {{ board_size + 1 }})
             {
                 page.parentElement.classList.remove('disabled');
             }
@@ -274,7 +273,7 @@
             }
         }
         const baseUrl = page.getAttribute('href');
-        page.setAttribute('href', baseUrl.concat(addUrl));
+                page.setAttribute('href', baseUrl.concat(addUrl));
     })
 </script>
 

@@ -15,7 +15,7 @@
     <link href="/css/dashboard.css" rel="stylesheet">
     <link href="/css/header.css" rel="stylesheet">
     <link href="/css/footer.css" rel="stylesheet">
-    <link href="/css/ckeditor" rel="stylesheet">
+    <link href="/css/ckeditor.css" rel="stylesheet">
     <style>
         .ck-editor__editable_inline {
             min-height: 400px;

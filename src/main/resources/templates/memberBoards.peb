@@ -146,18 +146,19 @@
         </div>
 
         <nav aria-label="Page navigation example" class="mt-3">
-            <ul class="pagination justify-content-center">
+            <ul id="paginationParent" class="pagination justify-content-center">
                 <li class="page-item disabled">
-                    <a class="page-link">Previous</a>
+                    <a class="page-link" href="?page={{ page-1 }}">Previous</a>
                 </li>
                 </li>
                 <li class="page-item active" aria-current="page">
                     <a class="page-link" href="?page=1">1</a>
                 </li>
-                <li class="page-item"><a class="page-link" href="?page=2">2</a></li>
-
-                <li class="page-item"><a class="page-link" href="?page=3">3</a></li>
-
+                {% for i in range(2, board_size+1)%}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
                 <li class="page-item disabled">
                     <a class="page-link" href="?page={{ page+1 }}">Next</a>
                 </li>
@@ -174,45 +175,48 @@
         crossorigin="anonymous"></script>
 
 <script>
+    // Sorting logic
     const buttons = document.querySelectorAll(`.sort-setter`);
 
     const caretUp = 'M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z';
 
     function sortFunc(event) {
-        const targetVal = "" + event.target.value;
-        if (targetVal.substring(targetVal.length - 3) === "Asc") {
-            event.target.value = targetVal.substring(0, targetVal.length - 3) + "Desc";
-        } else {
-            event.target.value = targetVal.substring(0, targetVal.length - 4) + "Asc";
+        let addUrl = "&search={{ search }}&category={{ category }}";
+        console.log(event.target.tagName);
+        if (event.target.tagName === 'svg' || event.target.tagName === 'SVG') {
+            const sortVal = "" + event.target.dataset.value;
+            /*if (targetVal.substring(targetVal.length - 3) === "Asc") {
+                event.target.dataset.value = targetVal.substring(0, targetVal.length - 3) + "Desc";
+            } else {
+                event.target.dataset.value = targetVal.substring(0, targetVal.length - 4) + "Asc";
+            }*/
+            window.location.replace("?page={{ page }}&sorter=" + sortVal + addUrl);
         }
-        window.location.replace("?page={{ page }}&sorter=" + targetVal);
     }
 
     buttons.forEach((button) => {
         button.addEventListener('click', sortFunc);
     })
+</script>
 
-    const pages = document.querySelectorAll('.page-item');
-
-    pages.forEach((page) => {
-        page.addEventListener('click', function () {
-            pages.classList.remove("active");
-            page.classList.add("active");
-        })
-    })
-
+<script>
+    //Search logic
     let baseUrl = "?page={{ page }}&sorter={{ sorter }}";
     let tempUrl;
 
     function changeSelect() {
         const selectList = document.getElementById("category");
+        const searchInput = document.getElementById("search-input");
         tempUrl = "&category=";
         if (selectList.options[selectList.selectedIndex].value === 'title') {
             tempUrl = tempUrl.concat("title");
+            searchInput.placeholder = "제목으로 검색하기";
         } else if (selectList.options[selectList.selectedIndex].value === 'description') {
             tempUrl = tempUrl.concat("description");
+            searchInput.placeholder = "본문으로 검색하기";
         } else if (selectList.options[selectList.selectedIndex].value === 'writer') {
             tempUrl = tempUrl.concat("writer");
+            searchInput.placeholder = "작성자로 검색하기";
         }
         selectList.options[selectList.selectedIndex].selected = true;
     }
@@ -226,8 +230,8 @@
 
     function doSearch() {
         const searchDesc = "" + document.getElementById('search-input').value
-        if (tempUrl === undefined) tempUrl = "&category=title";
-        window.location.replace('?page={{ page }}&sorter={{ sorter }}'.concat(tempUrl, "&search=", "" + searchDesc));
+        if (tempUrl === undefined) tempUrl = "&category=";
+        window.location.replace('?sorter={{ sorter }}'.concat(tempUrl, "&search=", "" + searchDesc));
     }
 </script>
 

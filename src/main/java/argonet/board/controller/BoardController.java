@@ -51,15 +51,18 @@ public class BoardController {
                            @RequestParam(value = "search", required = false, defaultValue = "") String search,
                            @RequestParam(value = "category", required = false, defaultValue = "") String category) {
 
-        List<BoardResponse> boards = new ArrayList<>();
+        List<BoardResponse> boards;
+        Long boardSize;
         if(!search.isEmpty()) {
             boards = boardService.searchBoard(search, category, page, sorter);
+            boardSize = (boards.size() - 1L) / 10L;
         } else {
             boards = boardService.findBySortRule(sorter, page);
+            boardSize = (boardService.getBoardsCount()-1L) / 10L;
         }
         model.addAttribute("search", search);
         model.addAttribute("category", category);
-        boardView(member, page, model, sorter, boards);
+        boardView(member, page, model, sorter, boards, boardSize);
         return "home";
     }
 
@@ -72,16 +75,12 @@ public class BoardController {
             @RequestParam(value = "search", required = false, defaultValue = "") String search,
             @RequestParam(value = "category", required = false, defaultValue = "") String category) {
 
-        List<BoardResponse> boards;
+        List<BoardResponse> boards = boardService.findByMemberId(member.getId(), sorter, page);;
+        Long boardSize = (boards.size() - 1L) / 10L;
 
-        if(!search.isEmpty()) {
-            boards = boardService.searchBoard(search, category, page, sorter);
-        } else {
-            boards = boardService.findByMemberId(member.getId(), sorter, page);
-        }
         model.addAttribute("search", search);
         model.addAttribute("category", category);
-        boardView(member, page, model, sorter, boards);
+        boardView(member, page, model, sorter, boards, boardSize);
         return "memberBoards";
     }
 
@@ -187,21 +186,11 @@ public class BoardController {
     }
 
 
-    private void boardView(Member member, int page, Model model, String sorter, List<BoardResponse> boards) {
+    private void boardView(Member member, int page, Model model, String sorter, List<BoardResponse> boards, Long boardSize) {
         model.addAttribute("member", member);
         boards = simpleDescription(boards);
         model.addAttribute("boards", boards);
-        model.addAttribute("board_size", (boards.size()-1)/10);
-        model.addAttribute("page", page);
-        model.addAttribute("sorter", sorter);
-    }
-
-    private void boardView(Member member, int page, Model model, String sorter, String search, String category) {
-        model.addAttribute("member", member);
-        List<BoardResponse> boards = boardService.searchBoard(search, category, page, sorter);
-        boards = simpleDescription(boards);
-        model.addAttribute("boards", boards);
-        model.addAttribute("board_size", boards.size());
+        model.addAttribute("board_size", (boardSize));
         model.addAttribute("page", page);
         model.addAttribute("sorter", sorter);
     }

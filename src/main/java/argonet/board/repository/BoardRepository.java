@@ -31,7 +31,7 @@ public class BoardRepository {
     public List<Board> findAll() {
         return em.createQuery("select distinct b from Board b " +
                         "where b.isDeleted = false " +
-                        "order by b.id asc", Board.class)
+                        "order by b.id desc", Board.class)
                 .getResultList();
     }
 
@@ -97,4 +97,9 @@ public class BoardRepository {
                 .getResultList();
     }
 
+    public Long findBoardsCount() {
+        return em.createQuery("select count(b) from Board b " +
+                "where b.isDeleted = false", Long.class)
+                .getSingleResult();
+    }
 }
