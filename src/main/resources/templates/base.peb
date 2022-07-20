@@ -17,7 +17,7 @@
 
 <div id="wrapper">
 
-    {% include 'header' %}
+    {% include "header" %}
 
     <div class="container">
 
@@ -34,7 +34,7 @@
 
 </div><!-- end wrap -->
 
-    {% include 'footer' %}
+    {% include "footer" %}
 
 
 </body>

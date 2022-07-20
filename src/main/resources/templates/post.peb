@@ -80,6 +80,18 @@
     const editor = ClassicEditor
             .create(document.querySelector('#editor'), {
                 language: "ko",
+                link: {
+                    decorators: {
+                        addTargetToExternalLinks: {
+                            mode: 'automatic',
+                            callback: url => /^(https?:)?\/\//.test( url ),
+                            attributes: {
+                                target: '_blank',
+                                rel: 'noopener noreferrer'
+                            }
+                        }
+                    }
+                },
                 simpleUpload:
                         {
                             uploadUrl: "/upload/image",

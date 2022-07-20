@@ -99,7 +99,8 @@
                                         <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
                                     </svg>
                                 {% endif %}
-                            </th>
+
+                            <th style="width:10%" scope="col">댓글</th>
                             <th style="width:10%" scope="col">작성자
                                 {% if sorter == "writerDesc" %}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
@@ -115,7 +116,7 @@
                                     </svg>
                                 {% endif %}
                             </th>
-                            <th style="width:10%" scope="col">작성일
+                            <th style="width:15%" scope="col">작성일
                                 {% if sorter == "dateDesc" %}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                          fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
@@ -138,6 +139,7 @@
                                 <td>{{ loop.index + 1 + ((page-1) * 10) }}</td>
                                 <td><a href="/board/{{ board.id }}">{{ board.title }}</a></td>
                                 <td>{{ board.description }}</td>
+                                <td><strong>[{{ board.comments.size() }}]</strong></td>
                                 <td>{{ board.memberName }}</td>
                                 <td>{{ board.createdAt }}</td>
                             </tr>
@@ -173,8 +175,9 @@
             </ul>
         </nav>
     </div>
-    {% include "footer" %}
 </div>
+    {% include "footer" %}
+
 </body>
 
 <!-- JavaScript Bundle with Popper -->

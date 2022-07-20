@@ -173,7 +173,7 @@ public class BoardController {
     public String deletdImage(@AuthenticationPrincipal Member member, @ModelAttribute FiledataRequest file,
                               @PathVariable(value = "id") Long id,
                               @PathVariable(value = "file_id") Long fileId) throws IOException {
-        if(boardService.findById(id).getMemberId() != member.getId()){
+        if(!Objects.equals(boardService.findById(id).getMemberId(), member.getId())){
             return "redirect:/";
         }
         Path path = Paths.get(filePath+"/"+file.getUuid()+"_"+file.getName());

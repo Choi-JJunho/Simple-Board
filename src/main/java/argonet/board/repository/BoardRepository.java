@@ -45,7 +45,7 @@ public class BoardRepository {
                         "where b.isDeleted = false " +
                         "order by " + sorter, Board.class)
                 .setFirstResult(start)
-                .setMaxResults(start + 10)
+                .setMaxResults(10)
                 .getResultList();
     }
 
@@ -60,7 +60,7 @@ public class BoardRepository {
                         " order by " + sorter, Board.class)
                 .setParameter("id", id)
                 .setFirstResult(start)
-                .setMaxResults(start + 10)
+                .setMaxResults(10)
                 .getResultList();
     }
 
@@ -77,7 +77,7 @@ public class BoardRepository {
                         " order by " + sorter, Board.class)
                 .setParameter("title", title)
                 .setFirstResult(start)
-                .setMaxResults(start + 10)
+                .setMaxResults(10)
                 .getResultList();
     }
 
@@ -88,7 +88,7 @@ public class BoardRepository {
                         " order by " + sorter, Board.class)
                 .setParameter("description", description)
                 .setFirstResult(start)
-                .setMaxResults(start + 10)
+                .setMaxResults(10)
                 .getResultList();
     }
 
@@ -99,7 +99,7 @@ public class BoardRepository {
                         " order by " + sorter, Board.class)
                 .setParameter("writer", writer)
                 .setFirstResult(start)
-                .setMaxResults(start + 10)
+                .setMaxResults(10)
                 .getResultList();
     }
 
