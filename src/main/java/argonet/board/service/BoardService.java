@@ -126,7 +126,7 @@ public class BoardService {
         }
     }
 
-    public Long getBoardsCount() {
-        return boardRepository.findBoardsCount();
+    public Long getBoardsCount(String countBy, String search) {
+        return boardRepository.findBoardsCount(countBy, search);
     }
 }
