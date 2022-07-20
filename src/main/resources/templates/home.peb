@@ -65,11 +65,11 @@
                 <h2>Board List</h2>
                 <div class="table-responsive">
                     <div id="current-sort-role" name="sort-rule" style="display:none"></div>
-                    <table class="table table-striped table-sm align-middle">
-                        <thead>
+                    <table class="table table-striped table-sm align-middle" style="table-layout:fixed; word-wrap:break-word; word-break:break-all;">
+                        <thead class="table-group-divider table-light">
                         <tr>
-                            <th scope="col">번호</th>
-                            <th scope="col">제목
+                            <th style="width:5%" scope="col">번호</th>
+                            <th style="width:15%" scope="col">제목
                                 {% if sorter == "titleDesc" %}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                          fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
@@ -85,7 +85,7 @@
                                     </svg>
                                 {% endif %}
                             </th>
-                            <th scope="col">본문
+                            <th style="width:20%" scope="col">본문
                                 {% if sorter == "descriptionDesc" %}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                          fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
@@ -100,7 +100,7 @@
                                     </svg>
                                 {% endif %}
                             </th>
-                            <th scope="col">작성자
+                            <th style="width:10%" scope="col">작성자
                                 {% if sorter == "writerDesc" %}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                          fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
@@ -115,7 +115,7 @@
                                     </svg>
                                 {% endif %}
                             </th>
-                            <th scope="col">작성일
+                            <th style="width:10%" scope="col">작성일
                                 {% if sorter == "dateDesc" %}
                                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
                                          fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"

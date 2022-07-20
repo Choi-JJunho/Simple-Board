@@ -34,7 +34,7 @@ public class MemberController {
                 request.getParameter("email")
         );
         memberService.join(member);
-        return "redirect:/";
+        return "redirect:/login";
     }
 
     @GetMapping("/login")
@@ -76,6 +76,6 @@ public class MemberController {
 
     @GetMapping("/member/delete")
     public String removeMember() {
-        return "redirect:/";
+        return "redirect:/login";
     }
 }

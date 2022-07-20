@@ -23,11 +23,12 @@ public class CommentController {
     private final CommentService commentService;
 
     @PostMapping("/comment/post")
-    public String createComment(@AuthenticationPrincipal Member member, @PathVariable(value = "id") Long id, CommentRequest request) throws Exception {
+    public String createComment(@AuthenticationPrincipal Member member, @PathVariable(value = "id") Long id, CommentRequest request, HttpServletRequest servletRequest) throws Exception {
         request.setMemberId(member.getId());
         request.setBoardId(id);
         commentService.save(request);
-        return "redirect:/board/" + id;
+        String beforeUrl = servletRequest.getHeader("Referer");
+        return "redirect:/board/"+ id;
     }
 
     @PostMapping("/comment/{comment_id}/delete")
