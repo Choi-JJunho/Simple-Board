@@ -52,14 +52,14 @@ public class BoardController {
                            @RequestParam(value = "category", required = false, defaultValue = "") String category) {
 
         List<BoardResponse> boards;
-        Long boardSize;
         if(!search.isEmpty()) {
             boards = boardService.searchBoard(search, category, page, sorter);
-            boardSize = (boards.size() - 1L) / 10L;
+            System.out.println(boards.size());
         } else {
             boards = boardService.findBySortRule(sorter, page);
-            boardSize = (boardService.getBoardsCount()-1L) / 10L;
         }
+        Long boardSize = (boardService.getBoardsCount(category, search)-1L) / 10L;
+
         model.addAttribute("search", search);
         model.addAttribute("category", category);
         boardView(member, page, model, sorter, boards, boardSize);
@@ -71,15 +71,11 @@ public class BoardController {
             @AuthenticationPrincipal Member member,
             Model model,
             @RequestParam(value = "page", required = false, defaultValue = "1") int page,
-            @RequestParam(value = "sorter", required = false, defaultValue = "") String sorter,
-            @RequestParam(value = "search", required = false, defaultValue = "") String search,
-            @RequestParam(value = "category", required = false, defaultValue = "") String category) {
+            @RequestParam(value = "sorter", required = false, defaultValue = "") String sorter) {
 
         List<BoardResponse> boards = boardService.findByMemberId(member.getId(), sorter, page);;
-        Long boardSize = (boards.size() - 1L) / 10L;
+        Long boardSize = (boardService.getBoardsCount("myboard", member.getId().toString()) - 1L) / 10L;
 
-        model.addAttribute("search", search);
-        model.addAttribute("category", category);
         boardView(member, page, model, sorter, boards, boardSize);
         return "memberBoards";
     }
@@ -91,7 +87,7 @@ public class BoardController {
     }
 
     @PostMapping("/board/post")
-    public String boardPost(@AuthenticationPrincipal Member member, BoardRequest request, Model model) throws Exception {
+    public String boardPost(@AuthenticationPrincipal Member member, BoardRequest request, Model model, HttpServletRequest servletRequest) throws Exception {
         model.addAttribute("member", member);
         request.setMemberId(member.getId());
         boardService.saveBoard(request);
@@ -134,7 +130,7 @@ public class BoardController {
         if(!Objects.equals(boardService.findById(id).getMemberId(), member.getId())){
             return "redirect:/";
         }
-        if (member != null) boardService.remove(id);
+        boardService.remove(id);
         return "redirect:/";
     }
     @PostMapping("/board/{id}/image/upload")
