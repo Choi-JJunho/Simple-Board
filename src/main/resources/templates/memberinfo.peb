@@ -1,0 +1,103 @@
+    {% extends 'base' %}
+        {% set activeNav = 'profile' %}
+
+        {% block title %}
+        User info
+        {% endblock %}
+
+    {% block content %}
+
+    <div class="profile" style="height:calc(100vh - 73px - 24px)">
+        <h2>
+                계정 : {{ member.account }}
+        </h2>
+        <div class="row">
+            <div class="col-md-2">
+                \( ˙▿˙ )/
+            </div>
+            <div class="col-md-10">
+
+
+                <dl class="dl-horizontal">
+                    <dt>Name</dt>
+                    <dd>{{ member.name }}</dd>
+                    <dd>
+                        <button type="button"
+                                class="modify btn btn-primary pl-2 pr-2 pb-1 pt-1 ml-2"
+                                data-bs-toggle="modal"
+                                data-bs-target="#nameModify">
+                            수정
+                        </button>
+                    </dd>
+
+                    <dt>Email</dt>
+                    <dd>{{ member.email }}</dd>
+                    <dd>
+                        <button type="button"
+                                class="modify btn btn-primary pl-2 pr-2 pb-1 pt-1 ml-2"
+                                data-bs-toggle="modal"
+                                data-bs-target="#emailModify">
+                            수정
+                        </button>
+                    </dd>
+                </dl>
+            </div>
+        </div>
+    </div>
+
+    <!-- Name Modify Modal-->
+    <div class="modal fade" id="nameModify" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!--header-->
+                <div class="modal-header">
+                    <h5 class="modal-title">이름 수정</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+
+                <form id="modifyComment" method="post" action="/member/modify">
+                    <div class="modal-body">
+                        <input type="text" name="name">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary">수정</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Email Modify Modal-->
+    <div class="modal fade" id="emailModify" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <!--header-->
+                <div class="modal-header">
+                    <h5 class="modal-title">이메일 수정</h5>
+                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">×</span>
+                    </button>
+                </div>
+
+                <form id="modifyComment" method="post" action="/member/modify">
+                    <div class="modal-body">
+                        <input type="email" id="modifyCommentId" name="email">
+                    </div>
+                    <div class="modal-footer">
+                        <button class="close btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+                        <button type="submit" class="btn btn-primary">수정</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- JavaScript Bundle with Popper -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+            crossorigin="anonymous"></script>
+    {% endblock content%}

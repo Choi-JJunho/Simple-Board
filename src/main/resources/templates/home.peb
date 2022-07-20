@@ -1,0 +1,280 @@
+<!Doctype HTML>
+<html lang="ko">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
+    <meta name="generator" content="Hugo 0.98.0">
+
+    <title>홈페이지</title>
+
+    <!-- CSS only -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
+    <link href="/css/dashboard.css" rel="stylesheet">
+    <link href="/css/header.css" rel="stylesheet">
+    <link href="/css/footer.css" rel="stylesheet">
+</head>
+
+<body style="overflow:auto">
+<div class="container">
+    <div class="header">
+        <header class="d-flex flex-wrap align-items-center justify-content-center justify-content-md-between py-3 mb-4 border-bottom">
+            <a href="/" class="d-flex align-items-center col-md-3 mb-2 mb-md-0 text-dark text-decoration-none">
+                <svg class="bi me-2" width="40" height="32" role="img" aria-label="Bootstrap">
+                    <use xlink:href="#bootstrap"></use>
+                </svg>
+            </a>
+
+            <ul class="nav col-12 col-md-auto mb-2 justify-content-center mb-md-0">
+                <li><a href="/" class="nav-link px-2 link-secondary">Home</a></li>
+                <li><a href="/member/boards" class="nav-link px-2 link-dark">MyBoards</a></li>
+                <li><a href="/member/info" class="nav-link px-2 link-dark">UserInfo</a></li>
+            </ul>
+
+            <div class="col-md-3 text-end">
+                    {% if member is null %}
+                    <a href="/login">
+                        <button type="button" class="btn btn-outline-primary me-2">Login</button>
+                    </a>
+                    <a href="/join">
+                        <button type="button" class="btn btn-primary">Sign up</button>
+                    </a>
+                    {% else %}
+                    <strong>Welcome</strong> {{ member.name }}
+                    <a href="/logout">
+                        <button type="button" class="btn btn-primary">Logout</button>
+                    </a>
+                    {% endif %}
+
+            </div>
+        </header>
+    </div>
+    <div id="wrapper" class="container-fluid">
+        <div class="row">
+            <main class="ms-sm-auto px-md-5">
+                <div class="input-group">
+                    <input id="search-input" type="text" class="form-control" placeholder="제목으로 검색하기">
+                    <button id="search-submit" type="button" class="btn btn-outline-secondary">Search</button>
+                    <select id="category" class="form-select- ml-2" onchange="changeSelect()">
+                        <option value="title">제목으로 찾기</option>
+                        <option value="description">본문으로 찾기</option>
+                        <option value="writer">작성자로 찾기</option>
+                    </select>
+                </div>
+                <h2>Board List</h2>
+                <div class="table-responsive">
+                    <div id="current-sort-role" name="sort-rule" style="display:none"></div>
+                    <table class="table table-striped table-sm align-middle">
+                        <thead>
+                        <tr>
+                            <th scope="col">번호</th>
+                            <th scope="col">제목
+                                {% if sorter == "titleDesc" %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
+                                         data-value="titleAsc">
+                                        <path onclick="this.disabled=true"
+                                              d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
+                                         data-value="titleDesc">
+                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    </svg>
+                                {% endif %}
+                            </th>
+                            <th scope="col">본문
+                                {% if sorter == "descriptionDesc" %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
+                                         data-value="descriptionAsc">
+                                        <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
+                                         data-value="descriptionDesc">
+                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    </svg>
+                                {% endif %}
+                            </th>
+                            <th scope="col">작성자
+                                {% if sorter == "writerDesc" %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
+                                         data-value="writerAsc">
+                                        <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
+                                         data-value="writerDesc">
+                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    </svg>
+                                {% endif %}
+                            </th>
+                            <th scope="col">작성일
+                                {% if sorter == "dateDesc" %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
+                                         data-value="dateAsc">
+                                        <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                    </svg>
+                                    {% else %}
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
+                                         data-value="dateDesc">
+                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                    </svg>
+                                {% endif %}
+                            </th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                                {% for board in boards %}
+                            <tr>
+                                <td>{{ loop.index + 1 + ((page-1) * 10) }}</td>
+                                <td><a href="/board/{{ board.id }}">{{ board.title }}</a></td>
+                                <td>{{ board.description }}</td>
+                                <td>{{ board.memberName }}</td>
+                                <td>{{ board.createdAt }}</td>
+                            </tr>
+                                {% endfor %}
+                        </tbody>
+                    </table>
+                    <a class="nav-item btn btn-primary align-self-center mr-4"
+                       href="/board/post">
+                        <i class="bi bi-pencil-square"></i>
+                        글쓰기
+                    </a>
+                </div>
+            </main>
+        </div>
+
+        <nav aria-label="Page navigation example" class="mt-3">
+            <ul id="paginationParent" class="pagination justify-content-center">
+                <li class="page-item disabled">
+                    <a class="page-link" href="?page={{ page-1 }}">Previous</a>
+                </li>
+                </li>
+                <li class="page-item active" aria-current="page">
+                    <a class="page-link" href="?page=1">1</a>
+                </li>
+                {% for i in range(2, board_size+1)%}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="?page={{ page+1 }}">Next</a>
+                </li>
+            </ul>
+        </nav>
+    </div>
+    {% include "footer" %}
+</div>
+</body>
+
+<!-- JavaScript Bundle with Popper -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
+        crossorigin="anonymous"></script>
+
+<script>
+    // Sorting logic
+    const buttons = document.querySelectorAll(`.sort-setter`);
+
+    const caretUp = 'M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z';
+
+    function sortFunc(event) {
+        let addUrl = "&search={{ search }}&category={{ category }}";
+        console.log(event.target.tagName);
+        if (event.target.tagName === 'svg' || event.target.tagName === 'SVG') {
+            const sortVal = "" + event.target.dataset.value;
+            /*if (targetVal.substring(targetVal.length - 3) === "Asc") {
+                event.target.dataset.value = targetVal.substring(0, targetVal.length - 3) + "Desc";
+            } else {
+                event.target.dataset.value = targetVal.substring(0, targetVal.length - 4) + "Asc";
+            }*/
+            window.location.replace("?page={{ page }}&sorter=" + sortVal + addUrl);
+        }
+    }
+
+    buttons.forEach((button) => {
+        button.addEventListener('click', sortFunc);
+    })
+</script>
+
+<script>
+    //Search logic
+    let baseUrl = "?page={{ page }}&sorter={{ sorter }}";
+    let tempUrl;
+
+    function changeSelect() {
+        const selectList = document.getElementById("category");
+        const searchInput = document.getElementById("search-input");
+        tempUrl = "&category=";
+        if (selectList.options[selectList.selectedIndex].value === 'title') {
+            tempUrl = tempUrl.concat("title");
+            searchInput.placeholder = "제목으로 검색하기";
+        } else if (selectList.options[selectList.selectedIndex].value === 'description') {
+            tempUrl = tempUrl.concat("description");
+            searchInput.placeholder = "본문으로 검색하기";
+        } else if (selectList.options[selectList.selectedIndex].value === 'writer') {
+            tempUrl = tempUrl.concat("writer");
+            searchInput.placeholder = "작성자로 검색하기";
+        }
+        selectList.options[selectList.selectedIndex].selected = true;
+    }
+
+    document.getElementById('search-input').addEventListener('keydown', function (event) {
+        if (event.key === 'Enter') {
+            doSearch();
+        }
+    });
+    document.getElementById('search-submit').addEventListener('click', doSearch);
+
+    function doSearch() {
+        const searchDesc = "" + document.getElementById('search-input').value
+        if (tempUrl === undefined) tempUrl = "&category=";
+        window.location.replace('?sorter={{ sorter }}'.concat(tempUrl, "&search=", "" + searchDesc));
+    }
+</script>
+
+<script> // Pagination
+    let pages = document.querySelectorAll('#paginationParent li a');
+    let addUrl = "&sorter={{ sorter }}&search={{ search }}&category={{ category }}";
+    pages.forEach((page) => {
+        if ("" + page.innerText === "" +{{ page }}) {
+            page.parentElement.classList.add('active');
+        } else {
+            page.parentElement.classList.remove('active');
+        }
+
+        if (page.innerText === 'Previous') {
+            if ({{ page }} <= 1)
+            {
+                page.parentElement.classList.add('disabled');
+            }
+        else
+            {
+                page.parentElement.classList.remove('disabled');
+            }
+        } else if (page.innerText === 'Next') {
+            if ({{ page }} < {{ board_size + 1 }})
+            {
+                page.parentElement.classList.remove('disabled');
+            }
+        else
+            {
+                page.parentElement.classList.add('disabled');
+            }
+        }
+        const baseUrl = page.getAttribute('href');
+                page.setAttribute('href', baseUrl.concat(addUrl));
+    })
+</script>
+
+</html>

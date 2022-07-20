@@ -23,7 +23,7 @@ public class CommentService {
     private final CommentRepository commentRepository;
     private final MemberRepository memberRepository;
     private final BoardRepository boardRepository;
-    @Login
+
     public void save(CommentRequest request) throws Exception{
         Member member = memberRepository.findById(request.getMemberId());
         Board board = boardRepository.findById(request.getBoardId());
@@ -34,7 +34,7 @@ public class CommentService {
         commentRepository.save(comment);
     }
 
-    @Login
+
     public CommentResponse update(CommentRequest request) {
         Comment comment = commentRepository.findById(request.getId());
         comment.update(request.getDescription());
@@ -42,10 +42,12 @@ public class CommentService {
         return new CommentResponse(comment);
     }
 
-    @Login
+
     public void remove(Long id) {
-        Comment comment = commentRepository.findById(id);
-        comment.delete();
-        commentRepository.save(comment);
+        commentRepository.remove(commentRepository.findById(id));
+    }
+
+    public CommentResponse findById(Long id) {
+        return new CommentResponse(commentRepository.findById(id));
     }
 }

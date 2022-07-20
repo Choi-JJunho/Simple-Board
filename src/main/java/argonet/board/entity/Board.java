@@ -27,6 +27,9 @@ public class Board {
     @OneToMany(mappedBy = "board")
     private List<Comment> comments;
 
+    @OneToMany(mappedBy = "board")
+    private List<Filedata> files;
+
     @Column(nullable = false, updatable = false, insertable = false, columnDefinition = "TIMESTAMP DEFAULT CURRENT_TIMESTAMP")
     private LocalDateTime createdAt;
 

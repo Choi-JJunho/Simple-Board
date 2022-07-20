@@ -35,3 +35,7 @@ build/
 ### properties files ###
 *.properties
 *.yml
+
+.images
+
+/src/main/resources/static/images/
