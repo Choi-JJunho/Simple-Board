@@ -15,7 +15,7 @@
     <link href="/css/dashboard.css" rel="stylesheet">
     <link href="/css/header.css" rel="stylesheet">
     <link href="/css/footer.css" rel="stylesheet">
-    <link href="/css/ckeditor" rel="stylesheet">
+    <link href="/css/ckeditor.css" rel="stylesheet">
 
     <style>
         .ck-editor__editable {
@@ -51,7 +51,7 @@
             {% else %}
             <form action="/board/{{ post_id }}/modify" method="POST">
                 <input type="text" class="form-control bg-light mb-3"
-                       placeholder="제목" name="title" value= {{ board.title }}
+                       placeholder="제목" name="title" maxlength="20" value= {{ board.title }}
                                aria-label="Title" aria-describedby="basic-addon2" required/>
                 <textarea name="description" id="editor" required>{{ board.description }}</textarea>
                 <p>

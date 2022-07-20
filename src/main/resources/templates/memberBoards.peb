@@ -53,15 +53,6 @@
     <div id="wrapper" class="container-fluid">
         <div class="row">
             <main class="ms-sm-auto px-md-5">
-                <div class="input-group">
-                    <input id="search-input" type="text" class="form-control" placeholder="제목으로 검색하기">
-                    <button id="search-submit" type="button" class="btn btn-outline-secondary">Search</button>
-                    <select id="category" class="form-select- ml-2" onchange="changeSelect()">
-                        <option value="title">제목으로 찾기</option>
-                        <option value="description">본문으로 찾기</option>
-                        <option value="writer">작성자로 찾기</option>
-                    </select>
-                </div>
                 <h2>Board List</h2>
                 <div class="table-responsive">
                     <div id="current-sort-role" name="sort-rule" style="display:none"></div>
@@ -70,65 +61,66 @@
                         <tr>
                             <th scope="col">번호</th>
                             <th scope="col">제목
-                                {% if sorter == "titleDesc" %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
-                                         data-value="titleAsc">
-                                        <path onclick="this.disabled=true"
-                                              d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
-                                    </svg>
-                                    {% else %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
-                                         data-value="titleDesc">
-                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
-                                    </svg>
-                                {% endif %}
+                                <button class="btn sort-setter" name="sorter" value="titleDesc">
+                                        {% if sorter == "titleDesc" %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+                                            <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                        </svg>
+                                        {% else %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                                            <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                        </svg>
+                                        {% endif %}
+                                </button>
                             </th>
                             <th scope="col">본문
-                                {% if sorter == "descriptionDesc" %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
-                                         data-value="descriptionAsc">
-                                        <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
-                                    </svg>
-                                    {% else %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
-                                         data-value="descriptionDesc">
-                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
-                                    </svg>
-                                {% endif %}
+                                <button class="btn sort-setter" name="sorter" value="descriptionDesc">
+                                        {% if sorter == "descriptionDesc" %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+                                            <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                        </svg>
+                                        {% else %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                                            <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                        </svg>
+                                        {% endif %}
+                                </button>
                             </th>
                             <th scope="col">작성자
-                                {% if sorter == "writerDesc" %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
-                                         data-value="writerAsc">
-                                        <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
-                                    </svg>
-                                    {% else %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
-                                         data-value="writerDesc">
-                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
-                                    </svg>
-                                {% endif %}
+                                <button class="btn sort-setter" name="sorter" value="writerDesc">
+                                        {% if sorter == "writerDesc" %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+                                            <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                        </svg>
+                                        {% else %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                                            <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                        </svg>
+                                        {% endif %}
+                                </button>
                             </th>
                             <th scope="col">작성일
-                                {% if sorter == "dateDesc" %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         fill="currentColor" class="sort-setter bi bi-caret-up" viewBox="0 0 16 16"
-                                         data-value="dateAsc">
-                                        <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
-                                    </svg>
-                                    {% else %}
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
-                                         fill="currentColor" class="sort-setter bi bi-caret-down" viewBox="0 0 16 16"
-                                         data-value="dateDesc">
-                                        <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
-                                    </svg>
-                                {% endif %}
+                                <button class="btn sort-setter" name="sorter" value="dateDesc">
+
+                                        {% if sorter == "dateDesc" %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-caret-up" viewBox="0 0 16 16">
+                                            <path d="M3.204 11h9.592L8 5.519 3.204 11zm-.753-.659 4.796-5.48a1 1 0 0 1 1.506 0l4.796 5.48c.566.647.106 1.659-.753 1.659H3.204a1 1 0 0 1-.753-1.659z"/>
+                                        </svg>
+                                        {% else %}
+                                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16"
+                                             fill="currentColor" class="bi bi-caret-down" viewBox="0 0 16 16">
+                                            <path d="M3.204 5h9.592L8 10.481 3.204 5zm-.753.659 4.796 5.48a1 1 0 0 0 1.506 0l4.796-5.48c.566-.647.106-1.659-.753-1.659H3.204a1 1 0 0 0-.753 1.659z"/>
+                                        </svg>
+                                        {% endif %}
+                                </button>
+
                             </th>
                         </tr>
                         </thead>
@@ -241,40 +233,6 @@
         if (tempUrl === undefined) tempUrl = "&category=";
         window.location.replace('?sorter={{ sorter }}'.concat(tempUrl, "&search=", "" + searchDesc));
     }
-</script>
-
-<script> // Pagination
-    let pages = document.querySelectorAll('#paginationParent li a');
-    let addUrl = "&sorter={{ sorter }}&search={{ search }}&category={{ category }}";
-    pages.forEach((page) => {
-        if ("" + page.innerText === "" +{{ page }}) {
-            page.parentElement.classList.add('active');
-        } else {
-            page.parentElement.classList.remove('active');
-        }
-
-        if (page.innerText === 'Previous') {
-            if ({{ page }} <= 1)
-            {
-                page.parentElement.classList.add('disabled');
-            }
-        else
-            {
-                page.parentElement.classList.remove('disabled');
-            }
-        } else if (page.innerText === 'Next') {
-            if ({{ page }} < {{ board_size + 1 }})
-            {
-                page.parentElement.classList.remove('disabled');
-            }
-        else
-            {
-                page.parentElement.classList.add('disabled');
-            }
-        }
-        const baseUrl = page.getAttribute('href');
-                page.setAttribute('href', baseUrl.concat(addUrl));
-    })
 </script>
 
 </html>

@@ -25,10 +25,10 @@ public class BoardApi {
         return boardService.findAll();
     }
 
-    @GetMapping("/boards/member")
+/*    @GetMapping("/member/boards")
     public List<BoardResponse> getMemberBoards(@RequestBody MemberRequest request) {
         return boardService.findByMemberId(request.getId());
-    }
+    }*/
 
     @PostMapping("/board/post")
     public void postBoard(@RequestBody BoardRequest request) throws Exception {

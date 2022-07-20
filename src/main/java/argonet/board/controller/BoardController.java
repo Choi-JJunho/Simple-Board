@@ -4,7 +4,6 @@ import argonet.board.dto.BoardRequest;
 import argonet.board.dto.BoardResponse;
 import argonet.board.dto.FiledataRequest;
 import argonet.board.dto.FiledataResponse;
-import argonet.board.entity.Filedata;
 import argonet.board.entity.Member;
 import argonet.board.service.BoardService;
 import argonet.board.service.FiledataService;
@@ -31,6 +30,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.UUID;
 
 @Controller
@@ -44,30 +44,44 @@ public class BoardController {
     String filePath;
 
     @GetMapping({"/", "/home"})
-    public String homeView(Model model, @AuthenticationPrincipal Member member) {
-        List<BoardResponse> boards = boardService.findAll();
-        model.addAttribute("member", member);
-        boards = simpleDescription(boards);
-        model.addAttribute("boards", boards);
+    public String homeView(Model model, @AuthenticationPrincipal Member member,
+                           HttpServletRequest request,
+                           @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+                           @RequestParam(value = "sorter", required = false, defaultValue = "") String sorter,
+                           @RequestParam(value = "search", required = false, defaultValue = "") String search,
+                           @RequestParam(value = "category", required = false, defaultValue = "") String category) {
+
+        List<BoardResponse> boards;
+        Long boardSize;
+        if(!search.isEmpty()) {
+            boards = boardService.searchBoard(search, category, page, sorter);
+            boardSize = (boards.size() - 1L) / 10L;
+        } else {
+            boards = boardService.findBySortRule(sorter, page);
+            boardSize = (boardService.getBoardsCount()-1L) / 10L;
+        }
+        model.addAttribute("search", search);
+        model.addAttribute("category", category);
+        boardView(member, page, model, sorter, boards, boardSize);
         return "home";
     }
 
-    private List<BoardResponse> simpleDescription(List<BoardResponse> boards) {
-        for (BoardResponse board : boards) {
-            board.simpleDescription();
-        }
-        return boards;
-    }
+    @GetMapping("/member/boards")
+    public String getBoardByMember(
+            @AuthenticationPrincipal Member member,
+            Model model,
+            @RequestParam(value = "page", required = false, defaultValue = "1") int page,
+            @RequestParam(value = "sorter", required = false, defaultValue = "") String sorter,
+            @RequestParam(value = "search", required = false, defaultValue = "") String search,
+            @RequestParam(value = "category", required = false, defaultValue = "") String category) {
 
-    @GetMapping("/boards/member")
-    public String getBoardByMember(@AuthenticationPrincipal Member member, Model model) {
-        List<BoardResponse> boards = boardService.findByMemberId(member.getId());
-        for (BoardResponse board : boards) {
-            board.simpleDescription();
-        }
-        model.addAttribute("boards", boards);
-        model.addAttribute("member", member);
-        return "home";
+        List<BoardResponse> boards = boardService.findByMemberId(member.getId(), sorter, page);;
+        Long boardSize = (boards.size() - 1L) / 10L;
+
+        model.addAttribute("search", search);
+        model.addAttribute("category", category);
+        boardView(member, page, model, sorter, boards, boardSize);
+        return "memberBoards";
     }
 
     @GetMapping("/board/post")
@@ -96,6 +110,9 @@ public class BoardController {
 
     @GetMapping("/board/{id}/modify")
     public String boardModifyPage(@AuthenticationPrincipal Member member, @PathVariable Long id, Model model) {
+        if(!Objects.equals(boardService.findById(id).getMemberId(), member.getId())){
+            return "redirect:/";
+        }
         model.addAttribute("post_id", id);
         BoardResponse board = boardService.findById(id);
         model.addAttribute("board", board);
@@ -105,12 +122,18 @@ public class BoardController {
 
     @PostMapping("/board/{id}/modify")
     public String boardModify(@AuthenticationPrincipal Member member, @PathVariable(value = "id") Long id, BoardRequest request, Model model) {
+        if(!Objects.equals(boardService.findById(id).getMemberId(), member.getId())){
+            return "redirect:/";
+        }
         boardService.update(request);
         return "redirect:/board/" + id;
     }
 
     @PostMapping("/board/{id}/delete")
     public String boardRemove(@AuthenticationPrincipal Member member, @PathVariable(value = "id") Long id, HttpServletRequest request) {
+        if(!Objects.equals(boardService.findById(id).getMemberId(), member.getId())){
+            return "redirect:/";
+        }
         if (member != null) boardService.remove(id);
         return "redirect:/";
     }
@@ -119,6 +142,9 @@ public class BoardController {
                          @RequestParam MultipartFile[] uploadfile,
                          @PathVariable(value = "id") Long id,
                          Model model) throws IOException, IllegalStateException {
+        if(!Objects.equals(boardService.findById(id).getMemberId(), member.getId())){
+            return "redirect:/";
+        }
         List<FiledataRequest> files = new ArrayList<>();
         for (MultipartFile file : uploadfile) {
             FiledataRequest data = new FiledataRequest(UUID.randomUUID().toString(),
@@ -151,8 +177,28 @@ public class BoardController {
     public String deletdImage(@AuthenticationPrincipal Member member, @ModelAttribute FiledataRequest file,
                               @PathVariable(value = "id") Long id,
                               @PathVariable(value = "file_id") Long fileId) throws IOException {
+        if(boardService.findById(id).getMemberId() != member.getId()){
+            return "redirect:/";
+        }
         Path path = Paths.get(filePath+"/"+file.getUuid()+"_"+file.getName());
         filedataService.remove(fileId, String.valueOf(path));
         return "redirect:/board/"+id;
+    }
+
+
+    private void boardView(Member member, int page, Model model, String sorter, List<BoardResponse> boards, Long boardSize) {
+        model.addAttribute("member", member);
+        boards = simpleDescription(boards);
+        model.addAttribute("boards", boards);
+        model.addAttribute("board_size", (boardSize));
+        model.addAttribute("page", page);
+        model.addAttribute("sorter", sorter);
+    }
+
+    private List<BoardResponse> simpleDescription(List<BoardResponse> boards) {
+        for (BoardResponse board : boards) {
+            board.simpleDescription();
+        }
+        return boards;
     }
 }

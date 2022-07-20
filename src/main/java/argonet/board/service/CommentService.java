@@ -46,4 +46,8 @@ public class CommentService {
     public void remove(Long id) {
         commentRepository.remove(commentRepository.findById(id));
     }
+
+    public CommentResponse findById(Long id) {
+        return new CommentResponse(commentRepository.findById(id));
+    }
 }

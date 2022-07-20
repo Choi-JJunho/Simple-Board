@@ -32,11 +32,17 @@ public class BoardResponse {
     }
 
     public void simpleDescription() {
-        String text = Jsoup.parse(this.description).text();
-        if (text.length() > 20) {
-            this.description = (text.substring(0, 20)) + "...";
+        String desc = Jsoup.parse(this.description).text();
+        String title = Jsoup.parse(this.title).text();
+        if (desc.length() > 10) {
+            this.description = (desc.substring(0, 10)) + "...";
         } else {
-            this.description = text;
+            this.description = desc;
+        }
+        if (title.length() > 10) {
+            this.title = (title.substring(0, 10)) + "...";
+        } else {
+            this.title = title;
         }
     }
 }
