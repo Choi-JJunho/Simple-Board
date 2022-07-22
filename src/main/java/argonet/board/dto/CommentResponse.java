@@ -13,12 +13,14 @@ public class CommentResponse {
     private String createdAt;
     private String memberName;
     private Long memberId;
+    private String updatedAt;
 
     public CommentResponse(Comment comment) {
         this.id = comment.getId();
         this.description = comment.getDescription();
-        this.createdAt = comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd hh:mm"));
+        this.createdAt = comment.getCreatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"));
         this.memberName = comment.getMember().getName();
         this.memberId = comment.getMember().getId();
+        this.updatedAt = comment.getUpdatedAt() != null ? comment.getUpdatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) : null;
     }
 }

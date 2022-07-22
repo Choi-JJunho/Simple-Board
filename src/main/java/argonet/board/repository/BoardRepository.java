@@ -83,7 +83,7 @@ public class BoardRepository {
 
     public List<Board> findByDescription(String description, int page, String sorter) {
         int start = (page - 1) * 10;
-        return em.createQuery("select count(b), b from Board b" +
+        return em.createQuery("select b from Board b" +
                         " where b.isDeleted = false and b.description like concat('%',:description,'%')" +
                         " order by " + sorter, Board.class)
                 .setParameter("description", description)

@@ -109,6 +109,7 @@ public class BoardService {
 
     public List<BoardResponse> searchBoard(String content, String category, int page, String sorter) {
         String runby = getsorter(sorter);
+
         switch (category) {
             case "writer":
                 return boardRepository.findByWriter(content, page, runby).stream()

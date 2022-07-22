@@ -53,8 +53,8 @@
                 <!--header-->
                 <div class="modal-header">
                     <h5 class="modal-title">이름 수정</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                    <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                        <span id="closeModalBtn" aria-hidden="true">×</span>
                     </button>
                 </div>
 
@@ -63,7 +63,7 @@
                         <input type="text" name="name" value="{{ member.name }}">
                     </div>
                     <div class="modal-footer">
-                        <button class="btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+                        <button class="btn btn-secondary" type="button" data-bs-dismiss="modal">취소</button>
                         <button type="submit" class="btn btn-primary">수정</button>
                     </div>
                 </form>
@@ -79,8 +79,8 @@
                 <!--header-->
                 <div class="modal-header">
                     <h5 class="modal-title">이메일 수정</h5>
-                    <button class="close" type="button" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">×</span>
+                    <button class="close" type="button" data-bs-dismiss="modal" aria-label="Close">
+                        <span id="closeModalBtn" aria-hidden="true">×</span>
                     </button>
                 </div>
 
@@ -89,7 +89,7 @@
                         <input type="email" id="modifyCommentId" name="email" value="{{ member.email }}">
                     </div>
                     <div class="modal-footer">
-                        <button class="close btn btn-secondary" type="button" data-dismiss="modal">취소</button>
+                        <button class="close btn btn-secondary" type="button" data-bs-dismiss="modal">취소</button>
                         <button type="submit" class="btn btn-primary">수정</button>
                     </div>
                 </form>
@@ -97,7 +97,13 @@
         </div>
     </div>
     <!-- JavaScript Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2"
-            crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-A3rJD856KowSb7dwlZdYEkO39Gagi7vIsF0jrRAoQmDKKtQBHUuLZ9AsSv4jD4Xa" crossorigin="anonymous"></script>
+        <script>
+            const modalClose = document.querySelectorAll('#closeModalBtn');
+            modalClose.forEach((modal) => {
+                modal.addEventListener('click', function () {
+                    modal.classList.add('hidden');
+                });
+            });
+        </script>
     {% endblock content%}

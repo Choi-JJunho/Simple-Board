@@ -7,10 +7,14 @@ import argonet.board.dto.FiledataResponse;
 import argonet.board.entity.Member;
 import argonet.board.service.BoardService;
 import argonet.board.service.FiledataService;
+import argonet.board.v2.repository.V2BoardRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ContentDisposition;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -39,9 +43,15 @@ public class BoardController {
 
     private final BoardService boardService;
     private final FiledataService filedataService;
+    private final V2BoardRepository v2BoardRepository;
 
     @Value("${spring.servlet.multipart.location}")
     String filePath;
+
+    @GetMapping("/paging")
+    public String paging(Pageable pageable) {
+        return "home";
+    }
 
     @GetMapping({"/", "/home"})
     public String homeView(Model model, @AuthenticationPrincipal Member member,
@@ -65,7 +75,6 @@ public class BoardController {
         boardView(member, page, model, sorter, boards, boardSize);
         return "home";
     }
-
     @GetMapping("/member/boards")
     public String getBoardByMember(
             @AuthenticationPrincipal Member member,
